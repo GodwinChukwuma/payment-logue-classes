@@ -221,14 +221,11 @@ class ProcessTransactionView(APIView):
         logger.info(
             "transaction.stored",
             extra={
-                "ref": tx_ref,
-                "pan_masked": pan_masked_val,
                 "amount": amount,
                 "email": email,
                 "status": "pending",
                 "ip": client_ip,
                 "user": request.user.email,
-                "db_id": tx.pk
             },
         )
 
@@ -290,7 +287,7 @@ class TransactionDetailView(APIView):
 
         logger.info(
             "transaction.decrypted",
-            extra={"ref": ref, "ip": _get_ip(request), "user": request.user.email, "pan_masked": tx.pan_masked},
+            extra={"ip": _get_ip(request), "user": request.user.email, status: tx.status},
         )
 
         return Response({
