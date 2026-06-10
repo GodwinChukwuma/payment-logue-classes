@@ -238,7 +238,7 @@ POST /api/processTransaction
   "success": true,
   "saved": true,
   "message": "Transaction stored successfully.",
-  "transaction_ref": "txn_19b1d9ec35d1c19076986f78",
+  "transaction_ref": "txn_19b1d9ec35d1c19076",
   "pan_masked": "************4444",
   "amount": "99.90",
   "email": "user@example.com",
@@ -263,7 +263,7 @@ GET /api/transaction/<transaction_ref>
   "success": true,
   "transaction_ref": "txn_19b1d9ec35d1c19076986f78",
   "pan_masked": "************4444",
-  "pan_decrypted": "5555555555554444",
+  "pan_decrypted": "************4444",
   "expiry_decrypted": "12/30"
 }
 ```
