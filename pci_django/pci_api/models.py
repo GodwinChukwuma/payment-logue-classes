@@ -49,7 +49,7 @@ class Transaction(models.Model):
     pan_masked = models.CharField(max_length=24)  # Masked PAN for display (e.g., "**** **** **** 1234")
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     email = models.EmailField(max_length=254)
-    owner = models.ForeignKey(APIUser, on_delete=models.CASCADE, related_name='transactions')
+    owner = models.ForeignKey(APIUser, on_delete=models.CASCADE, related_name='transactions', null=True, blank=True)
     status = models.CharField(
         max_length=20,
         choices=Status.choices,

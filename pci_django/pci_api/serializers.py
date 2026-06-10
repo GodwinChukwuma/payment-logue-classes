@@ -3,6 +3,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from pci_api.validators import APPROVED_DOMAINS
 from rest_framework.exceptions import ValidationError
+from decimal import Decimal
 
 class RegisterSerializer(serializers.Serializer):
    email = serializers.EmailField(help_text="Must be gmail, yahoo, outlook.....")
@@ -41,8 +42,10 @@ class TransactionRequestSerializer(serializers.Serializer):
       help_text="Card expiry date in MM/YY or MM/YYYY format.",
    )
    amount = serializers.DecimalField(
-    max_digits=12, decimal_places=2,
-        help_text="Transaction amount (max 1,000,000).",
+      max_digits=12,
+      decimal_places=2,
+      min_value=Decimal("0.01"),
+      help_text="Transaction amount (0.01 - 1,000,000.00).",
    )
    pin = serializers.CharField(
         min_length=4, max_length=6,

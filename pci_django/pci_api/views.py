@@ -37,6 +37,17 @@ logger = logging.getLogger("pci_audit")
         "After registration, obtain tokens via POST /api/auth/token/."
     ),
     request=RegisterSerializer,
+    examples=[
+        OpenApiExample(
+            "Registration",
+            value={
+                "first_name": "John",
+                "last_name": "Doe",
+                "email": "user3@gmail.com",
+                "password": "password123",
+            }
+        )
+    ]
 )
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -79,6 +90,18 @@ class RegisterView(APIView):
             status=status.HTTP_201_CREATED,
         )
 
+@extend_schema(
+    request=TokenResponseSerializer,
+    examples=[
+        OpenApiExample(
+            "Registration",
+            value={
+                "email": "user3@gmail.com",
+                "password": "password123",
+            }
+        )
+    ]
+)
 class TokenObtainView(TokenObtainPairView):
     pass
 
@@ -101,6 +124,18 @@ class TokenObtainView(TokenObtainPairView):
         "**Rate limit:** 30 requests per minute per IP."
     ),
     request=TransactionRequestSerializer,
+    examples=[
+        OpenApiExample(
+            "Valid Transaction",
+            value={
+                "pan": "5555555555554444",
+                "expiry_date": "12/30",
+                "amount": "99.90",
+                "pin": "2020",
+                "email": "user3@gmail.com"
+            }
+        )
+    ]
 )
 class ProcessTransactionView(APIView):
     permission_classes = [IsAuthenticated]
@@ -262,16 +297,20 @@ class TransactionDetailView(APIView):
             "success": True,
             "transaction_ref": tx.transaction_ref,
             "pan_masked": tx.pan_masked,
-            "pan_decrypted": pan_decrypted, 
-            "expiry_decrypted": expiry_decrypted,
             "stored_encrypted": {
                 "pan_encrypted": tx.pan_encrypted[:50] + "...",
                 "expiry_encrypted": tx.expiry_encrypted,
             },
-            "amount": str(tx.amount),
-            "email": tx.email,
-            "status": tx.status,
-            "created_at": tx.created_at.isoformat(),
+            "decrypted": {
+                "pan_decrypted": pan_decrypted, 
+                "expiry_decrypted": expiry_decrypted,
+            },
+            "metadata": {
+                "amount": str(tx.amount),
+                "email": tx.email,
+                "status": tx.status,
+                "created_at": tx.created_at.isoformat(),
+            },
         })
 
 
