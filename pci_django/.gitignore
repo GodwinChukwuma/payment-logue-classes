@@ -1,0 +1,151 @@
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# =========================
+# Virtual Environments
+# =========================
+venv/
+.venv/
+env/
+ENV/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# Django Secrets & Settings
+# =========================
+local_settings.py
+settings_local.py
+settings_dev.py
+settings_prod.py
+settings_production.py
+settings_staging.py
+
+# Secret files
+secrets.py
+secret.py
+credentials.py
+
+# Key material
+*.pem
+*.key
+*.crt
+*.cer
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# =========================
+# Databases
+# =========================
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+
+# PostgreSQL dumps
+*.sql
+*.dump
+*.backup
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Static Files
+# =========================
+staticfiles/
+static/
+
+# =========================
+# Media Uploads
+# =========================
+media/
+uploads/
+
+# =========================
+# Coverage & Testing
+# =========================
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# macOS
+# =========================
+.DS_Store
+
+# =========================
+# Linux
+# =========================
+*~
+
+# =========================
+# Windows
+# =========================
+Thumbs.db
+Desktop.ini
+
+# =========================
+# Build Artifacts
+# =========================
+build/
+dist/
+*.egg-info/
+
+# =========================
+# Docker
+# =========================
+docker-compose.override.yml
+
+# =========================
+# Terraform
+# =========================
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# =========================
+# Security Scan Outputs
+# =========================
+bandit-report.json
+safety-report.json
+
+# =========================
+# Temporary Files
+# =========================
+tmp/
+temp/
+*.tmp
+
+# =========================
+# Local Development Config
+# =========================
+*.local
+config.local.*
