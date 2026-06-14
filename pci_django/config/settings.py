@@ -12,7 +12,7 @@ load_dotenv(BASE_DIR / '.env')
 # Core
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") #
 
 AUTH_USER_MODEL = 'pci_api.APIUser'
 
@@ -33,8 +33,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'pci_api.middleware.SecurityHeadersMiddleware',
-    'pci_api.middleware.RequestLoggingMiddleware',
+    'pci_api.middleware.SecurityHeadersMiddleware', # add security headers to PCI-compliant responses
+    'pci_api.middleware.RequestLoggingMiddleware', # Log requests and response (audit middleware)
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -101,7 +101,7 @@ SPECTACULAR_SETTINGS = {
         "4. Transaction endpoints are now accessible\n\n"
         "## Security controls\n"
         "- AES-256-GCM encryption at rest (PAN, expiry)\n"
-        "- PIN never stored (PCI-DSS Req 3.2.1)\n"
+        "- PIN never stored or logged\n"
         "- JWT HS256, 60-min access tokens\n"
         "- Rate limit: 30 req/min per IP\n"
         "- Masked PAN only in responses/logs (`************1111`)\n"
@@ -159,7 +159,7 @@ LOGGING = {
         },
     },
     'handlers': {
-        # Roating file handler
+        # Rotating file handler
         'transaction_file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': BASE_DIR / LOG_FILE,

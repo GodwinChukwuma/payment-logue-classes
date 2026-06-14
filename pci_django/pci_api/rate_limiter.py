@@ -5,6 +5,7 @@ import time
 from threading import Lock
 from collections import defaultdict, deque
 
+# I used Lock to prevent multiple threads from accessing the dictionary at the same time
 _lock = Lock()
 _windows: dict[str, deque] = defaultdict(deque)
 
@@ -15,6 +16,8 @@ def is_allowed(client_ip: str) -> tuple[bool, int]:
     limit = getattr(settings, "RATE_LIMIT_PER_MINUTE", 30)
     window = 60  # seconds
 
+     # (Why I used the monotonic time instead of time.time()?-
+     #  when a server is restarted, time.time() will be reset to 0 but with monotonic it won't)
     now = time.monotonic()
     cutoff = now - window
 
