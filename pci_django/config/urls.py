@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
@@ -27,6 +27,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from pci_api.views import (
+    ArchiveListView,
     ProcessTransactionView,
     RegisterView,
     TokenObtainView,
@@ -36,12 +37,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path("admin/", admin.site.urls),
     path("api/auth/register/", RegisterView.as_view(), name="auth-register"),
     path("api/auth/token/", TokenObtainView.as_view(), name="token-obtain"),
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("api/auth/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
+    path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),
     path("api/processTransaction", ProcessTransactionView.as_view(), name="process-transaction"),
     path("api/transaction/<str:ref>/", TransactionDetailView.as_view(), name="transaction-detail"),
+    path("api/archive/", ArchiveListView.as_view(), name="archive-list"),
 
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),

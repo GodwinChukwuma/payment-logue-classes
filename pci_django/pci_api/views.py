@@ -11,11 +11,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.request import Request
-from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
+from drf_spectacular.utils import OpenApiExample, extend_schema
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from pci_api.encryption import decrypt_field, encrypt_field, mask_pan
-from pci_api.models import Transaction, APIUser
+from pci_api.models import Transaction, APIUser, TransactionArchive, Status
 from pci_api.rate_limiter import is_allowed
 from pci_api.validators import validate_transaction
 
@@ -80,6 +80,7 @@ class RegisterView(APIView):
             first_name=ser.validated_data["first_name"],
             last_name=ser.validated_data["last_name"],
             password=ser.validated_data["password"],
+            is_verified=True,
         )
         logger.info(
             "user.registered",
@@ -156,6 +157,13 @@ class ProcessTransactionView(APIView):
             resp["Retry_after"] = "60"
             return resp
         
+        if not request.user.is_verified:
+            return error_response(
+                "EMAIL_NOT_VERIFIED",
+                "Please verify your email first.",
+                status.HTTP_403_FORBIDDEN
+            )
+        
         result = validate_transaction(request.data)
         if not result.valid:
             logger.warning(
@@ -185,7 +193,7 @@ class ProcessTransactionView(APIView):
 
         existing_pending = Transaction.objects.filter(
             email=request.user.email,
-            status=Transaction.Status.PENDING,
+            status=Status.PENDING,
         ).exists()
 
         if existing_pending:
@@ -204,7 +212,7 @@ class ProcessTransactionView(APIView):
                 pan_masked = pan_masked_val,
                 email = email,
                 amount = amount,
-                status = Transaction.Status.PENDING,
+                status = Status.PENDING,
                 client_ip = client_ip,
             )
         except Exception as exc:
@@ -221,11 +229,14 @@ class ProcessTransactionView(APIView):
         logger.info(
             "transaction.stored",
             extra={
+                "ref": tx_ref,
+                "pan_masked": pan_masked_val,
                 "amount": amount,
                 "email": email,
-                "status": "pending",
+                "status": "PENDING",
                 "ip": client_ip,
                 "user": request.user.email,
+                "db_id": tx.pk,
             },
         )
 
@@ -238,7 +249,7 @@ class ProcessTransactionView(APIView):
                 "pan_masked": pan_masked_val,
                 "amount": amount,
                 "email": email,
-                "status": "pending",
+                "status": "PENDING",
                 "timestamp": now.isoformat(),
             },
             status=status.HTTP_201_CREATED
@@ -287,7 +298,7 @@ class TransactionDetailView(APIView):
 
         logger.info(
             "transaction.decrypted",
-            extra={"ip": _get_ip(request), "user": request.user.email, status: tx.status},
+            extra={"ref": ref, "ip": _get_ip(request), "pan_masked": tx.pan_masked,"user": request.user.email},
         )
 
         return Response({
@@ -309,6 +320,29 @@ class TransactionDetailView(APIView):
                 "created_at": tx.created_at.isoformat(),
             },
         })
+
+@extend_schema(
+    tags=["Archive"],
+    summary="List archived transactions for the current user",
+    description=(
+        "**Requires JWT authentication.**\n\n"
+        "Returns all transactions that have been moved to the archive table "
+        "(older than `ARCHIVE_AFTER_SECONDS` days, default 30).\n\n"
+        "Encrypted fields are not decrypted here — only masked PAN is returned. "
+        "the row is still in the live table)."
+    ),
+)
+class ArchiveListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request) -> Response:
+        archives = TransactionArchive.objects.filter(
+            owner=request.user,
+        ).values(
+            "transaction_ref", "pan_masked", "amount", "email",
+            "status", "created_at", "archived_at", "archived_reason",
+        )
+        return Response({"success": True, "count": archives.count(), "result": list(archives)})
 
 
 

@@ -20,19 +20,27 @@ AUTH_USER_MODEL = 'pci_api.APIUser'
 INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.staticfiles',
+    'django.contrib.admin', # required to manage OAuth2 applications
+    'django.contrib.messages',
     'django.contrib.auth',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'oauth2_provider',
     'drf_spectacular_sidecar',
+    'django_apscheduler',
+
     'pci_api',
 ]
 
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware', # required by admin
     'django.middleware.common.CommonMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware', # required by admin
+    'django.contrib.messages.middleware.MessageMiddleware', # required by admin
     'pci_api.middleware.SecurityHeadersMiddleware', # add security headers to PCI-compliant responses
     'pci_api.middleware.RequestLoggingMiddleware', # Log requests and response (audit middleware)
 ]
@@ -41,6 +49,10 @@ ROOT_URLCONF = 'config.urls'
 WSGI_APPLICATION = 'config.wsgi.application'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 USE_TZ=True
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Database
 DATABASES = {
@@ -69,6 +81,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -86,8 +99,21 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS256",
     "SIGNING_KEY": os.environ["JWT_SECRET_KEY"],
     "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",
+}
+
+# OAuth2 toolkit
+OAUTH2_PROVIDER = {
+    'ACCESS_TOKEN_EXPIRE_SECONDS': 3600,
+    'REFRESH_TOKEN_EXPIRE_SECONDS': 86400,
+    'ROTATE_REFRESH_TOKENS': True,
+    'SCOPE': {
+        'read': 'Read access to transaction and archive',
+        'write': 'Submit new transactions',
+    },
+    'DEFAULT_SCOPE': ['read', 'write'],
 }
 
 SPECTACULAR_SETTINGS = {
@@ -126,7 +152,12 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': [],
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
         },
     },
 ]
@@ -146,8 +177,11 @@ API_KEY = os.environ["API_KEY"]
 # Rate Limiting
 RATE_LIMIT_PER_MINUTE = int(os.environ.get("RATE_LIMIT_PER_MINUTE", "30"))
 
+ARCHIVE_INTERVAL_SECONDS = int(os.environ.get("ARCHIVE_INTERVAL_SECONDS", "30"))
+
 # Logging
 LOG_FILE = os.environ.get("LOG_FILE", "logs/transactions.log")
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 os.makedirs(os.path.dirname(BASE_DIR / LOG_FILE), exist_ok=True)
 
 LOGGING = {
@@ -211,6 +245,6 @@ SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = "DENY"
 USE_TZ = True
 
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# STATIC_URL = "/static/"
+# STATIC_ROOT = BASE_DIR / "staticfiles"
 
