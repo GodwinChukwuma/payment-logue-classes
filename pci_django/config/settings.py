@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load .env file
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(BASE_DIR / '.env', override=True)
 
 # Core
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.admin', # required to manage OAuth2 applications
     'django.contrib.messages',
     'django.contrib.auth',
+    'django.contrib.sessions',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
@@ -31,7 +32,7 @@ INSTALLED_APPS = [
     'drf_spectacular_sidecar',
     'django_apscheduler',
 
-    'pci_api',
+    'pci_api.apps.PciApiConfig',
 ]
 
 # Middleware
@@ -51,18 +52,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 USE_TZ=True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("DB_USER"),
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
-        'HOST': os.environ.get("DB_HOST", "localhost"),
-        'PORT': os.environ.get("DB_PORT", "5432"),
+        'NAME': os.environ.get("POSTGRES_DB", os.environ.get("DB_NAME", "")),
+        'USER': os.environ.get("POSTGRES_USER", os.environ.get("DB_USER", "")),
+        'PASSWORD': os.environ.get("POSTGRES_PASSWORD", os.environ.get("DB_PASSWORD", "")),
+        'HOST': os.environ.get("POSTGRES_HOST", os.environ.get("DB_HOST", "localhost")),
+        'PORT': os.environ.get("POSTGRES_PORT", os.environ.get("DB_PORT", "5432")),
 
         'OPTIONS': {
             'sslmode': 'prefer',
@@ -71,20 +72,27 @@ DATABASES = {
     }
 }
 
+if DEBUG:
+    print(
+        f"[settings] DB target -> "
+        f"{DATABASES['default']['USER']}@{DATABASES['default']['HOST']}:"
+        f"{DATABASES['default']['PORT']}/{DATABASES['default']['NAME']}"
+    )
+
 # Django REST Framework
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
-    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
     ],
     'DEFAULT_THROTTLE_CLASSES': [],
     'EXCEPTION_HANDLER': 'pci_api.errors.pci_exception_handler',
@@ -134,6 +142,7 @@ SPECTACULAR_SETTINGS = {
     ),
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
     "SWAGGER_UI_DIST": "SIDECAR",
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",

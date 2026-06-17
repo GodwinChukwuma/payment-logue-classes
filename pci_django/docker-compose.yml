@@ -1,0 +1,123 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pci_transactions}
+      POSTGRES_USER: ${POSTGRES_USER:-pci_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-user}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./setup_db.sql:/docker-entrypoint-initdb.d/setup_db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pci_user} -d ${POSTGRES_DB:-pci_transactions}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - pci_net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pci_api:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - pci_net
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/schema')\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+volumes:
+  pgdata:
+
+networks:
+  pci_net:
+    driver: bridge
+
+
+
+
+# services:
+#   db:
+#     image: postgres:16-alpine
+#     restart: unless-stopped
+#     environment:
+#       POSTGRES_DB: ${POSTGRES_DB:-pci_transactions}
+#       POSTGRES_USER: ${POSTGRES_USER:-pci_user}
+#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+#       - ./setup_db.sql:/docker-entrypoint-initdb.d/setup_db.sql:ro
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pci_user} -d ${POSTGRES_DB:-pci_transactions}"]
+#       interval: 5s
+#       timeout: 5s
+#       retries: 10
+#     networks:
+#       - pci_net
+
+#   api:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     image: pci_api:latest
+#     restart: unless-stopped
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#     env_file:
+#       - .env
+#     environment:
+#       POSTGRES_HOST: db
+#       POSTGRES_PORT: 5432
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - ./logs:/app/logs
+#     networks:
+#       - pci_net
+
+#   scheduler:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     command: python run_scheduler.py
+#     restart: unless-stopped
+#     env_file:
+#       - .env
+#     environment:
+#       POSTGRES_HOST: db
+#       POSTGRES_PORT: 5432
+#       ARCHIVE_INTERVAL_SECONDS: "30"
+#       SERVICE_ROLE: "scheduler"
+#     depends_on:
+#       db:
+#         condition: service_healthy
+#     volumes:
+#       - .:/app
+#     working_dir: /app
+#     networks:
+#       - pci_net
+# volumes:
+#   pgdata:
+
+# networks:
+#   pci_net:
+#     driver: bridge
+
+

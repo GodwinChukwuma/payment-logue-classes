@@ -14,7 +14,7 @@ logger = logging.getLogger("pci_audit")
 BATCH_SIZE = 500
 
 class Command(BaseCommand):
-    help = "Archive transactions older than ARCHIVE_AFTER_DAYS days"
+    help = "Archive transactions older than ARCHIVE_AFTER_SECONDS seconds."
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -49,7 +49,7 @@ class Command(BaseCommand):
             self.stdout.write("No transactions qualify for archiving.")
             logger.info(
                 "archive.skipped",
-                extra={"reason": "no_candidates", "cutoff_days": seconds, "cutoff_date": cutoff.isoformat()},
+                extra={"reason": "no_candidates", "cutoff_seconds": seconds, "cutoff_time": cutoff.isoformat()},
             )
             return
         
@@ -59,10 +59,11 @@ class Command(BaseCommand):
 
         while True:
             batch = list(
-                candidate_qs.select_related("owner")[:BATCH_SIZE]
+                candidate_qs.select_related("owner").order_by("id")[:BATCH_SIZE]
             )
             if not batch:
                 break
+            
             batch_num += 1
             try:
                 archived_total += _archive_batch(batch)
@@ -72,7 +73,9 @@ class Command(BaseCommand):
                     "archive.batch_failed",
                     extra={"batch": batch_num, "error": repr(exc)},
                 )
-            break # Do not abort batches for one failure
+                break # Do not abort batches for one failure
+
+            #candidate_qs = candidate_qs.exclude(pk__in=[t.pk for t in batch])
 
         outcome = "archive.completed" if errors == 0 else "archive.completed_with_errors"
         logger.info(
@@ -88,7 +91,7 @@ class Command(BaseCommand):
 
         msg = (
             f"Arhived {archived_total} pf {total} transaction(s)"
-            f"(cutoff: {seconds} / {cutoff.date()})"
+            f"(cutoff: {seconds} / {cutoff.isoformat()})"
         )
         if errors:
             self.stdout.write(self.style.ERROR(msg + f"Erros: {errors} batch(es) failed."))
@@ -116,7 +119,7 @@ def _archive_batch(batch: list[Transaction]) -> int:
             status=tx.status,
             client_ip=tx.client_ip,
             created_at=tx.created_at,
-            archive_reason="older_than_cutoff",
+            archived_reason="age_policy",
         )
         for tx in batch
     ]
@@ -126,4 +129,5 @@ def _archive_batch(batch: list[Transaction]) -> int:
         Transaction.objects.filter(pk__in=ids).delete()
 
     return len(batch)
+
 
