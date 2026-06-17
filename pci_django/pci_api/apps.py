@@ -37,7 +37,7 @@ class PciApiConfig(AppConfig):
     name = "pci_api"
 
     def ready(self):
-        if sys.argv[1] != "runserver":
+        if len(sys.argv) < 2 or sys.argv[1] != "runserver":
             return
 
         if os.environ.get("RUN_MAIN") != "true":

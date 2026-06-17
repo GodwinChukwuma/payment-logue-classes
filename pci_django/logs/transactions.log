@@ -1233,3 +1233,327 @@
 {"timestamp": "2026-06-17T13:59:31.535338+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
 {"timestamp": "2026-06-17T13:59:31.548786+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 11}
 {"timestamp": "2026-06-17T13:59:45.419018+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/archive/", "ip": "192.168.65.1", "status": 200, "duration_ms": 92}
+{"timestamp": "2026-06-17T15:27:29.183060+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:27:53.143805+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 412}
+{"timestamp": "2026-06-17T15:27:53.178042+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 29}
+{"timestamp": "2026-06-17T15:27:59.207141+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:27:59.241371+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:27:29.208398+00:00"}
+{"timestamp": "2026-06-17T15:28:23.708953+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 35}
+{"timestamp": "2026-06-17T15:28:23.732675+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 15}
+{"timestamp": "2026-06-17T15:28:29.172072+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:28:29.183377+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:27:59.173389+00:00"}
+{"timestamp": "2026-06-17T15:28:54.160816+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 9}
+{"timestamp": "2026-06-17T15:28:54.188136+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 20}
+{"timestamp": "2026-06-17T15:29:17.761868+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:29:45.059475+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 271}
+{"timestamp": "2026-06-17T15:29:45.078847+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 17}
+{"timestamp": "2026-06-17T15:29:47.811172+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:29:47.862877+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:29:17.813617+00:00"}
+{"timestamp": "2026-06-17T15:32:19.670957+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:32:48.502542+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 1291}
+{"timestamp": "2026-06-17T15:32:48.579051+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 56}
+{"timestamp": "2026-06-17T15:32:49.693936+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:32:49.756254+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:32:19.694458+00:00"}
+{"timestamp": "2026-06-17T15:33:19.026592+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 12}
+{"timestamp": "2026-06-17T15:33:19.058162+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 29}
+{"timestamp": "2026-06-17T15:33:19.689028+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:33:19.694633+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:32:49.689648+00:00"}
+{"timestamp": "2026-06-17T15:33:49.363287+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 7}
+{"timestamp": "2026-06-17T15:33:49.387483+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 18}
+{"timestamp": "2026-06-17T15:33:49.681268+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:33:49.686151+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:33:19.682256+00:00"}
+{"timestamp": "2026-06-17T15:34:19.686770+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:34:19.695633+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:33:49.691629+00:00"}
+{"timestamp": "2026-06-17T15:34:19.843633+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:34:19.888056+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 42}
+{"timestamp": "2026-06-17T15:34:49.688758+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:34:49.696580+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:34:19.690001+00:00"}
+{"timestamp": "2026-06-17T15:34:51.542873+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 20}
+{"timestamp": "2026-06-17T15:34:51.586040+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 27}
+{"timestamp": "2026-06-17T15:35:19.748311+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:35:19.777393+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:34:49.768139+00:00"}
+{"timestamp": "2026-06-17T15:35:22.061760+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 7}
+{"timestamp": "2026-06-17T15:35:22.080064+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 16}
+{"timestamp": "2026-06-17T15:35:49.702848+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:35:49.715057+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:35:19.703763+00:00"}
+{"timestamp": "2026-06-17T15:35:52.514386+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 27}
+{"timestamp": "2026-06-17T15:35:52.574960+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 35}
+{"timestamp": "2026-06-17T15:36:19.684664+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:36:19.691837+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:35:49.686886+00:00"}
+{"timestamp": "2026-06-17T15:36:22.927824+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:36:22.945122+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 15}
+{"timestamp": "2026-06-17T15:36:49.684358+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:36:49.689382+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:36:19.685845+00:00"}
+{"timestamp": "2026-06-17T15:36:53.222384+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 9}
+{"timestamp": "2026-06-17T15:36:53.242104+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 18}
+{"timestamp": "2026-06-17T15:37:19.700441+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:37:19.707918+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:36:49.702995+00:00"}
+{"timestamp": "2026-06-17T15:37:23.573159+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 7}
+{"timestamp": "2026-06-17T15:37:23.592311+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 17}
+{"timestamp": "2026-06-17T15:37:49.706153+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:37:49.722806+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:37:19.710764+00:00"}
+{"timestamp": "2026-06-17T15:37:53.959997+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 10}
+{"timestamp": "2026-06-17T15:37:53.989297+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 27}
+{"timestamp": "2026-06-17T15:38:19.702743+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:38:19.711035+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:37:49.704101+00:00"}
+{"timestamp": "2026-06-17T15:38:24.342609+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 5}
+{"timestamp": "2026-06-17T15:38:24.363133+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 15}
+{"timestamp": "2026-06-17T15:38:49.700217+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:38:49.713124+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:38:19.702026+00:00"}
+{"timestamp": "2026-06-17T15:38:54.637018+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 5}
+{"timestamp": "2026-06-17T15:38:54.651112+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 12}
+{"timestamp": "2026-06-17T15:39:19.690934+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:39:19.698354+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:38:49.692857+00:00"}
+{"timestamp": "2026-06-17T15:39:24.968027+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 5}
+{"timestamp": "2026-06-17T15:39:24.980905+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 11}
+{"timestamp": "2026-06-17T15:39:49.688404+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:39:49.695919+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:39:19.690190+00:00"}
+{"timestamp": "2026-06-17T15:39:55.284897+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:39:55.300217+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 13}
+{"timestamp": "2026-06-17T15:40:19.691922+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:40:19.699160+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:39:49.694043+00:00"}
+{"timestamp": "2026-06-17T15:40:25.618656+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 9}
+{"timestamp": "2026-06-17T15:40:25.637387+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 17}
+{"timestamp": "2026-06-17T15:40:49.696836+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:40:49.709023+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:40:19.698272+00:00"}
+{"timestamp": "2026-06-17T15:40:55.933620+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:40:55.957847+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 21}
+{"timestamp": "2026-06-17T15:41:19.692022+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:41:19.712522+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:40:49.701050+00:00"}
+{"timestamp": "2026-06-17T15:41:26.276783+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:41:26.296717+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 17}
+{"timestamp": "2026-06-17T15:41:49.696745+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:41:49.707359+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:41:19.701183+00:00"}
+{"timestamp": "2026-06-17T15:41:56.660921+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 13}
+{"timestamp": "2026-06-17T15:41:56.693430+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 30}
+{"timestamp": "2026-06-17T15:42:19.689943+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:42:19.704873+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:41:49.695369+00:00"}
+{"timestamp": "2026-06-17T15:42:27.009338+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 5}
+{"timestamp": "2026-06-17T15:42:27.023810+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 12}
+{"timestamp": "2026-06-17T15:42:49.692852+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:42:49.698493+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:42:19.694407+00:00"}
+{"timestamp": "2026-06-17T15:42:57.327712+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:42:57.343438+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 13}
+{"timestamp": "2026-06-17T15:43:19.677629+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:43:19.686126+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:42:49.680610+00:00"}
+{"timestamp": "2026-06-17T15:43:27.654792+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:43:27.669917+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 13}
+{"timestamp": "2026-06-17T15:43:49.668314+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:43:49.684131+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:43:19.672651+00:00"}
+{"timestamp": "2026-06-17T15:43:58.005325+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 8}
+{"timestamp": "2026-06-17T15:43:58.023222+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 15}
+{"timestamp": "2026-06-17T15:44:19.705482+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:44:19.714033+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:43:49.707382+00:00"}
+{"timestamp": "2026-06-17T15:44:28.398287+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 9}
+{"timestamp": "2026-06-17T15:44:28.416727+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 16}
+{"timestamp": "2026-06-17T15:44:49.693596+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:44:49.703585+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:44:19.695135+00:00"}
+{"timestamp": "2026-06-17T15:44:58.726221+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:44:58.745584+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 16}
+{"timestamp": "2026-06-17T15:45:19.681494+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:45:19.689089+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:44:49.683084+00:00"}
+{"timestamp": "2026-06-17T15:46:37.985269+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:47:01.507326+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 185}
+{"timestamp": "2026-06-17T15:47:01.524857+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 15}
+{"timestamp": "2026-06-17T15:47:08.144271+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:47:08.413687+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:46:38.351407+00:00"}
+{"timestamp": "2026-06-17T15:47:19.786885+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:47:23.937938+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/docs/", "ip": "127.0.0.1", "status": 200, "duration_ms": 29}
+{"timestamp": "2026-06-17T15:47:24.356780+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 9}
+{"timestamp": "2026-06-17T15:47:39.067337+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "POST", "path": "/api/auth/token/", "ip": "127.0.0.1", "status": 200, "duration_ms": 387}
+{"timestamp": "2026-06-17T15:47:48.858804+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:47:48.907727+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:47:18.859471+00:00"}
+{"timestamp": "2026-06-17T15:47:52.771439+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/archive/", "ip": "127.0.0.1", "status": 200, "duration_ms": 16}
+{"timestamp": "2026-06-17T15:48:21.211812+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:48:48.097442+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 209}
+{"timestamp": "2026-06-17T15:48:48.115420+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 16}
+{"timestamp": "2026-06-17T15:48:51.162661+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:48:51.280978+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:48:21.164168+00:00"}
+{"timestamp": "2026-06-17T15:49:18.417719+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:49:18.437329+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 17}
+{"timestamp": "2026-06-17T15:49:21.097242+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:49:21.104039+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:48:51.098257+00:00"}
+{"timestamp": "2026-06-17T15:49:48.910632+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 10}
+{"timestamp": "2026-06-17T15:49:48.933022+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 19}
+{"timestamp": "2026-06-17T15:49:51.120785+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:49:51.144548+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:49:21.123958+00:00"}
+{"timestamp": "2026-06-17T15:50:19.251018+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 13}
+{"timestamp": "2026-06-17T15:50:19.268450+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 14}
+{"timestamp": "2026-06-17T15:50:21.116349+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:50:21.121095+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:49:51.116811+00:00"}
+{"timestamp": "2026-06-17T15:50:49.666689+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 12}
+{"timestamp": "2026-06-17T15:50:49.715929+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 47}
+{"timestamp": "2026-06-17T15:50:51.285166+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:50:51.299881+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:50:21.292360+00:00"}
+{"timestamp": "2026-06-17T15:51:20.029315+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 10}
+{"timestamp": "2026-06-17T15:51:20.048823+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 15}
+{"timestamp": "2026-06-17T15:51:21.086131+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:51:21.093915+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:50:51.086732+00:00"}
+{"timestamp": "2026-06-17T15:51:51.027051+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 7}
+{"timestamp": "2026-06-17T15:51:51.055699+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 22}
+{"timestamp": "2026-06-17T15:51:51.121318+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:51:51.127051+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:51:21.121566+00:00"}
+{"timestamp": "2026-06-17T15:53:34.670592+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:53:34.746157+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:53:34.975179+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:53:36.139420+00:00", "level": "INFO", "event": "scheduler.started", "taskName": null, "job": "archive_transactions", "interval_seconds": 30}
+{"timestamp": "2026-06-17T15:53:39.532489+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/docs/", "ip": "192.168.65.1", "status": 200, "duration_ms": 584}
+{"timestamp": "2026-06-17T15:53:42.806392+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "192.168.65.1", "status": 200, "duration_ms": 2121}
+{"timestamp": "2026-06-17T15:53:56.811056+00:00", "level": "WARNING", "event": "auth.failed", "taskName": null, "ip": "192.168.65.1", "reason": "No active account found with the given credentials"}
+{"timestamp": "2026-06-17T15:53:56.811797+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "POST", "path": "/api/auth/token/", "ip": "192.168.65.1", "status": 401, "duration_ms": 540}
+{"timestamp": "2026-06-17T15:53:59.464679+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 17}
+{"timestamp": "2026-06-17T15:53:59.483873+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 17}
+{"timestamp": "2026-06-17T15:54:06.013703+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:54:06.013878+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:54:06.018633+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:54:06.117569+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:53:36.018391+00:00"}
+{"timestamp": "2026-06-17T15:54:06.117606+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:53:36.022251+00:00"}
+{"timestamp": "2026-06-17T15:54:06.118238+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:53:36.018502+00:00"}
+{"timestamp": "2026-06-17T15:54:07.021982+00:00", "level": "INFO", "event": "user.registered", "taskName": null, "email": "user3@gmail.com", "ip": "192.168.65.1"}
+{"timestamp": "2026-06-17T15:54:07.022633+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "POST", "path": "/api/auth/register/", "ip": "192.168.65.1", "status": 201, "duration_ms": 316}
+{"timestamp": "2026-06-17T15:54:12.850718+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "POST", "path": "/api/auth/token/", "ip": "192.168.65.1", "status": 200, "duration_ms": 323}
+{"timestamp": "2026-06-17T15:54:30.496809+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 10}
+{"timestamp": "2026-06-17T15:54:30.956968+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 429}
+{"timestamp": "2026-06-17T15:54:33.988067+00:00", "level": "INFO", "event": "transaction.stored", "taskName": null, "ref": "txn_42566b5f4b732caf4799797f", "pan_masked": "************4444", "amount": "99.90", "email": "user3@gmail.com", "status": "PENDING", "ip": "192.168.65.1", "user": "user3@gmail.com", "db_id": 1}
+{"timestamp": "2026-06-17T15:54:33.988707+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "POST", "path": "/api/processTransaction", "ip": "192.168.65.1", "status": 201, "duration_ms": 91}
+{"timestamp": "2026-06-17T15:54:36.008891+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:54:36.008919+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:54:36.009143+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:54:36.021251+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:54:36.025988+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:54:06.010950+00:00"}
+{"timestamp": "2026-06-17T15:54:36.026662+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:54:06.013442+00:00"}
+{"timestamp": "2026-06-17T15:54:36.027244+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:54:06.012226+00:00"}
+{"timestamp": "2026-06-17T15:54:36.095751+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:54:06.025198+00:00"}
+{"timestamp": "2026-06-17T15:54:49.156636+00:00", "level": "INFO", "event": "transaction.decrypted", "taskName": null, "ref": "txn_42566b5f4b732caf4799797f", "ip": "192.168.65.1", "pan_masked": "************4444", "user": "user3@gmail.com"}
+{"timestamp": "2026-06-17T15:54:49.157988+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/transaction/txn_42566b5f4b732caf4799797f/", "ip": "192.168.65.1", "status": 200, "duration_ms": 44}
+{"timestamp": "2026-06-17T15:55:01.471728+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 25}
+{"timestamp": "2026-06-17T15:55:01.515637+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 40}
+{"timestamp": "2026-06-17T15:55:06.009099+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:55:06.009479+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:55:06.009917+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:55:06.010163+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:55:06.055811+00:00", "level": "ERROR", "event": "archive.batch_failed", "taskName": null, "batch": 1, "error": "IntegrityError('duplicate key value violates unique constraint \"pci_transactions_archive_transaction_ref_key\"\\nDETAIL:  Key (transaction_ref)=(txn_42566b5f4b732caf4799797f) already exists.\\n')"}
+{"timestamp": "2026-06-17T15:55:06.055884+00:00", "level": "ERROR", "event": "archive.batch_failed", "taskName": null, "batch": 1, "error": "IntegrityError('duplicate key value violates unique constraint \"pci_transactions_archive_transaction_ref_key\"\\nDETAIL:  Key (transaction_ref)=(txn_42566b5f4b732caf4799797f) already exists.\\n')"}
+{"timestamp": "2026-06-17T15:55:06.056582+00:00", "level": "INFO", "event": "archive.completed", "taskName": null, "archved": 1, "errors": 0, "cutoff_days": 30, "cutoff_date": "2026-06-17T15:54:36.012403+00:00", "batches": 1}
+{"timestamp": "2026-06-17T15:55:06.056794+00:00", "level": "INFO", "event": "archive.completed_with_errors", "taskName": null, "archved": 0, "errors": 1, "cutoff_days": 30, "cutoff_date": "2026-06-17T15:54:36.017557+00:00", "batches": 1}
+{"timestamp": "2026-06-17T15:55:06.056869+00:00", "level": "ERROR", "event": "archive.batch_failed", "taskName": null, "batch": 1, "error": "IntegrityError('duplicate key value violates unique constraint \"pci_transactions_archive_transaction_ref_key\"\\nDETAIL:  Key (transaction_ref)=(txn_42566b5f4b732caf4799797f) already exists.\\n')"}
+{"timestamp": "2026-06-17T15:55:06.057063+00:00", "level": "INFO", "event": "archive.completed_with_errors", "taskName": null, "archved": 0, "errors": 1, "cutoff_days": 30, "cutoff_date": "2026-06-17T15:54:36.011684+00:00", "batches": 1}
+{"timestamp": "2026-06-17T15:55:06.057843+00:00", "level": "INFO", "event": "archive.completed_with_errors", "taskName": null, "archved": 0, "errors": 1, "cutoff_days": 30, "cutoff_date": "2026-06-17T15:54:36.014124+00:00", "batches": 1}
+{"timestamp": "2026-06-17T15:55:27.280555+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/transaction/txn_42566b5f4b732caf4799797f/", "ip": "192.168.65.1", "status": 404, "duration_ms": 12}
+{"timestamp": "2026-06-17T15:55:33.172262+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 377}
+{"timestamp": "2026-06-17T15:55:33.250566+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 66}
+{"timestamp": "2026-06-17T15:55:36.204963+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:55:36.205140+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:55:36.205838+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:55:36.207045+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:55:36.237166+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:55:06.217326+00:00"}
+{"timestamp": "2026-06-17T15:55:36.239844+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:55:06.217007+00:00"}
+{"timestamp": "2026-06-17T15:55:36.246888+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:55:06.217370+00:00"}
+{"timestamp": "2026-06-17T15:55:36.247189+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:55:06.218285+00:00"}
+{"timestamp": "2026-06-17T15:55:37.882807+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/archive/", "ip": "192.168.65.1", "status": 200, "duration_ms": 87}
+{"timestamp": "2026-06-17T15:56:03.642656+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 19}
+{"timestamp": "2026-06-17T15:56:03.666155+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 21}
+{"timestamp": "2026-06-17T15:56:05.994610+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:56:05.998475+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:56:05.999073+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:56:06.003427+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:56:06.005506+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:55:35.997425+00:00"}
+{"timestamp": "2026-06-17T15:56:06.008296+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:55:36.002932+00:00"}
+{"timestamp": "2026-06-17T15:56:06.008481+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:55:36.003984+00:00"}
+{"timestamp": "2026-06-17T15:56:06.010525+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:55:36.005203+00:00"}
+{"timestamp": "2026-06-17T15:56:33.957391+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 4}
+{"timestamp": "2026-06-17T15:56:33.983463+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 24}
+{"timestamp": "2026-06-17T15:56:36.027808+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:56:36.027929+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:56:36.028281+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:56:36.028345+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:56:36.035912+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:56:06.030948+00:00"}
+{"timestamp": "2026-06-17T15:56:36.037449+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:56:06.032119+00:00"}
+{"timestamp": "2026-06-17T15:56:36.037628+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:56:06.032418+00:00"}
+{"timestamp": "2026-06-17T15:56:36.040518+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:56:06.033508+00:00"}
+{"timestamp": "2026-06-17T15:57:04.336892+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 19}
+{"timestamp": "2026-06-17T15:57:04.364241+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 24}
+{"timestamp": "2026-06-17T15:57:05.978586+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:57:05.980526+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:57:05.980930+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:57:05.983958+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:56:35.979620+00:00"}
+{"timestamp": "2026-06-17T15:57:05.984523+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:57:05.985129+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:56:35.981834+00:00"}
+{"timestamp": "2026-06-17T15:57:05.986188+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:56:35.982797+00:00"}
+{"timestamp": "2026-06-17T15:57:05.990308+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:56:35.986318+00:00"}
+{"timestamp": "2026-06-17T15:57:34.677918+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 9}
+{"timestamp": "2026-06-17T15:57:34.718228+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 27}
+{"timestamp": "2026-06-17T15:57:36.039377+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:57:36.039918+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:57:36.042341+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:57:36.044106+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:57:36.060555+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:57:06.043034+00:00"}
+{"timestamp": "2026-06-17T15:57:36.060792+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:57:06.043569+00:00"}
+{"timestamp": "2026-06-17T15:57:36.061396+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:57:06.044372+00:00"}
+{"timestamp": "2026-06-17T15:57:36.064417+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:57:06.046027+00:00"}
+{"timestamp": "2026-06-17T15:58:05.064452+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 17}
+{"timestamp": "2026-06-17T15:58:05.111435+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 44}
+{"timestamp": "2026-06-17T15:58:05.996073+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:58:06.000113+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:58:06.000594+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:58:06.001074+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:58:06.003181+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:57:35.997609+00:00"}
+{"timestamp": "2026-06-17T15:58:06.005055+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:57:36.001950+00:00"}
+{"timestamp": "2026-06-17T15:58:06.007133+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:57:36.004439+00:00"}
+{"timestamp": "2026-06-17T15:58:06.008934+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:57:36.004337+00:00"}
+{"timestamp": "2026-06-17T15:58:35.964327+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 6}
+{"timestamp": "2026-06-17T15:58:35.986693+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:58:35.988284+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:58:35.988340+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:58:35.993739+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:58:05.987217+00:00"}
+{"timestamp": "2026-06-17T15:58:35.999029+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:58:05.992910+00:00"}
+{"timestamp": "2026-06-17T15:58:35.999924+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:58:05.993640+00:00"}
+{"timestamp": "2026-06-17T15:58:36.031724+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:58:36.052983+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:58:06.037029+00:00"}
+{"timestamp": "2026-06-17T15:58:36.060032+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 63}
+{"timestamp": "2026-06-17T15:58:39.171080+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/archive/", "ip": "192.168.65.1", "status": 200, "duration_ms": 184}
+{"timestamp": "2026-06-17T15:59:06.206891+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:59:06.207037+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:59:06.207189+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:59:06.209974+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:59:06.228162+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:58:36.216283+00:00"}
+{"timestamp": "2026-06-17T15:59:06.232900+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:58:36.209261+00:00"}
+{"timestamp": "2026-06-17T15:59:06.232857+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:58:36.209373+00:00"}
+{"timestamp": "2026-06-17T15:59:06.241751+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:58:36.221489+00:00"}
+{"timestamp": "2026-06-17T15:59:06.873160+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 52}
+{"timestamp": "2026-06-17T15:59:06.992450+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 112}
+{"timestamp": "2026-06-17T15:59:21.001276+00:00", "level": "INFO", "event": "transaction.stored", "taskName": null, "ref": "txn_c9507f7688c6b057c21c8def", "pan_masked": "************4444", "amount": "99.90", "email": "user3@gmail.com", "status": "PENDING", "ip": "192.168.65.1", "user": "user3@gmail.com", "db_id": 2}
+{"timestamp": "2026-06-17T15:59:21.010334+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "POST", "path": "/api/processTransaction", "ip": "192.168.65.1", "status": 201, "duration_ms": 184}
+{"timestamp": "2026-06-17T15:59:30.071849+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "POST", "path": "/api/processTransaction", "ip": "192.168.65.1", "status": 409, "duration_ms": 8}
+{"timestamp": "2026-06-17T15:59:36.034166+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:59:36.039795+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:59:36.040336+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:59:36.040438+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T15:59:36.051554+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:59:06.041629+00:00"}
+{"timestamp": "2026-06-17T15:59:36.076447+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:59:06.047896+00:00"}
+{"timestamp": "2026-06-17T15:59:36.078474+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:59:06.044064+00:00"}
+{"timestamp": "2026-06-17T15:59:36.085804+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T15:59:06.047322+00:00"}
+{"timestamp": "2026-06-17T15:59:37.441835+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 39}
+{"timestamp": "2026-06-17T15:59:37.476921+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 33}
+{"timestamp": "2026-06-17T16:00:06.030959+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T16:00:06.031277+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T16:00:06.039371+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T16:00:06.041850+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T16:00:06.090971+00:00", "level": "ERROR", "event": "archive.batch_failed", "taskName": null, "batch": 1, "error": "IntegrityError('duplicate key value violates unique constraint \"pci_transactions_archive_transaction_ref_key\"\\nDETAIL:  Key (transaction_ref)=(txn_c9507f7688c6b057c21c8def) already exists.\\n')"}
+{"timestamp": "2026-06-17T16:00:06.090983+00:00", "level": "ERROR", "event": "archive.batch_failed", "taskName": null, "batch": 1, "error": "IntegrityError('duplicate key value violates unique constraint \"pci_transactions_archive_transaction_ref_key\"\\nDETAIL:  Key (transaction_ref)=(txn_c9507f7688c6b057c21c8def) already exists.\\n')"}
+{"timestamp": "2026-06-17T16:00:06.091745+00:00", "level": "ERROR", "event": "archive.batch_failed", "taskName": null, "batch": 1, "error": "IntegrityError('duplicate key value violates unique constraint \"pci_transactions_archive_transaction_ref_key\"\\nDETAIL:  Key (transaction_ref)=(txn_c9507f7688c6b057c21c8def) already exists.\\n')"}
+{"timestamp": "2026-06-17T16:00:06.091766+00:00", "level": "INFO", "event": "archive.completed_with_errors", "taskName": null, "archved": 0, "errors": 1, "cutoff_days": 30, "cutoff_date": "2026-06-17T15:59:36.039157+00:00", "batches": 1}
+{"timestamp": "2026-06-17T16:00:06.091793+00:00", "level": "INFO", "event": "archive.completed_with_errors", "taskName": null, "archved": 0, "errors": 1, "cutoff_days": 30, "cutoff_date": "2026-06-17T15:59:36.049737+00:00", "batches": 1}
+{"timestamp": "2026-06-17T16:00:06.092658+00:00", "level": "INFO", "event": "archive.completed_with_errors", "taskName": null, "archved": 0, "errors": 1, "cutoff_days": 30, "cutoff_date": "2026-06-17T15:59:36.041885+00:00", "batches": 1}
+{"timestamp": "2026-06-17T16:00:06.092327+00:00", "level": "INFO", "event": "archive.completed", "taskName": null, "archved": 1, "errors": 0, "cutoff_days": 30, "cutoff_date": "2026-06-17T15:59:36.044337+00:00", "batches": 1}
+{"timestamp": "2026-06-17T16:00:07.866852+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema", "ip": "127.0.0.1", "status": 404, "duration_ms": 8}
+{"timestamp": "2026-06-17T16:00:07.884969+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/schema/", "ip": "127.0.0.1", "status": 200, "duration_ms": 16}
+{"timestamp": "2026-06-17T16:00:10.598339+00:00", "level": "INFO", "event": "http.request", "taskName": null, "method": "GET", "path": "/api/archive/", "ip": "192.168.65.1", "status": 200, "duration_ms": 53}
+{"timestamp": "2026-06-17T16:00:36.023426+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T16:00:36.023456+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T16:00:36.023951+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T16:00:36.024615+00:00", "level": "INFO", "event": "archive.scheduler_triggered", "taskName": null, "source": "apscheduler"}
+{"timestamp": "2026-06-17T16:00:36.035233+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T16:00:06.026967+00:00"}
+{"timestamp": "2026-06-17T16:00:36.035747+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T16:00:06.026432+00:00"}
+{"timestamp": "2026-06-17T16:00:36.037897+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T16:00:06.029131+00:00"}
+{"timestamp": "2026-06-17T16:00:36.039298+00:00", "level": "INFO", "event": "archive.skipped", "taskName": null, "reason": "no_candidates", "cutoff_seconds": 30, "cutoff_time": "2026-06-17T16:00:06.029715+00:00"}

@@ -4,7 +4,7 @@ FROM python:3.12-slim AS builder
 # Prevent .pyc files and enableunbuffered stdout
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
-WORKDIR /app
+WORKDIR /build
 
 # Install OS-level, build tools needed by psycopg2 combination
 RUN apt-get update && apt-get install -y --no-install-recommends gcc libpq-dev \
@@ -46,5 +46,7 @@ EXPOSE 8000
 # 1. Wait for postgress
 # 2. Run migrations of db
 # 3. Start gunicorn with 4 workers
-CMD ["sh", "-c", "python manage.py migrate --noinput && gunicorn config.wsgi:application \
-    --bind 0.0.0.0:8000 --workers 4 --preload --access-logfile - --error-logfile - --log-level info"]
+CMD ["sh", "-c", \
+    "python manage.py collectstatic --noinput && \
+    python manage.py migrate --noinput && \
+    gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 4 --config gunicorn.conf.py"]

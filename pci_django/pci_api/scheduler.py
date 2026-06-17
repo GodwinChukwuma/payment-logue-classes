@@ -38,6 +38,12 @@ def start() -> None:
     _scheduler = BackgroundScheduler(timezone="UTC")
     _scheduler.add_jobstore(DjangoJobStore(), "default")
  
+    try:
+        _scheduler.remove_job("archive_transactions", jobstore="default")
+    except KeyError:
+        pass
+
+
     _scheduler.add_job(
         _run_archive,
         trigger=IntervalTrigger(seconds=interval),
