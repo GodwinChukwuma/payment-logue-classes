@@ -23,10 +23,13 @@ class RegisterResponseSerializer(serializers.Serializer):
    email = serializers.EmailField()
 
 class TokenResponseSerializer(serializers.Serializer):
+   success = serializers.BooleanField(default=True)
+   message = serializers.CharField(default="Successfully logged in. Use access to authorize and authenticate requests.")
    access = serializers.CharField(help_text="JWT access token (expires in 60 min)")
    refresh = serializers.CharField(help_text="JWT refresh token (expires in 1 day)")
 
 class PCITokenObtainSerializer(TokenObtainPairSerializer):
+   """Userride bto use email as the username field."""
    username_field = "email"
 
    def validate(self, attrs):
@@ -83,4 +86,19 @@ class ErrorSerializer(serializers.Serializer):
    success = serializers.BooleanField(default=False)
    error = serializers.DictField()
 
+
+class ArchiveEntrySerializer(serializers.Serializer):
+   transaction_ref = serializers.CharField()
+   pan_masked = serializers.CharField()
+   amount = serializers.CharField()
+   email = serializers.EmailField()
+   status = serializers.CharField()
+   created_at = serializers.DateTimeField()
+   archived_at = serializers.DateTimeField()
+   archived_reason = serializers.CharField()
+
+class ArchiveListResponseSerializer(serializers.Serializer):
+   success = serializers.BooleanField(default=True)
+   count = serializers.IntegerField()
+   result = ArchiveEntrySerializer(many=True)
 

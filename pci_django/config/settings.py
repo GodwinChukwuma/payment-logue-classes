@@ -16,6 +16,11 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").sp
 
 AUTH_USER_MODEL = 'pci_api.APIUser'
 
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+]
+
 # installed App
 INSTALLED_APPS = [
     'django.contrib.contenttypes',

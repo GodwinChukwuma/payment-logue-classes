@@ -30,7 +30,7 @@ from pci_api.views import (
     ArchiveListView,
     ProcessTransactionView,
     RegisterView,
-    TokenObtainView,
+    SignInView,
     TransactionDetailView,
 )
 from django.conf import settings
@@ -39,7 +39,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/auth/register/", RegisterView.as_view(), name="auth-register"),
-    path("api/auth/token/", TokenObtainView.as_view(), name="token-obtain"),
+    path("api/auth/signin/", SignInView.as_view(), name="auth-signin"),
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("api/auth/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
     path("o/", include("oauth2_provider.urls", namespace="oauth2_provider")),

@@ -51,6 +51,7 @@ logger = logging.getLogger("pci_audit")
 )
 class RegisterView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
 
     def post(self, request: Request) -> Response:
         ser = RegisterSerializer(data=request.data)
@@ -92,10 +93,11 @@ class RegisterView(APIView):
         )
 
 @extend_schema(
-    request=TokenResponseSerializer,
+    tags=["Authentication"],
+    summary="Sign in and obtain JWT access token and refresh token`",
     examples=[
         OpenApiExample(
-            "Registration",
+            "Sign in",
             value={
                 "email": "user3@gmail.com",
                 "password": "password123",
@@ -103,8 +105,26 @@ class RegisterView(APIView):
         )
     ]
 )
-class TokenObtainView(TokenObtainPairView):
-    pass
+class SignInView(TokenObtainPairView):
+    serializer_class = PCITokenObtainSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == status.HTTP_200_OK:
+            response.data["success"] = True
+            response.data["message"] = (
+                "Logged in successfully. Use access to authorize and authenticate requests."
+            )
+            logger.info(
+                "auth.login_success",
+                extra={"ip": _get_ip(request), "email": request.data.get("email", "")},
+            )
+
+        return response
+
+# backward compatibility alias - keep TokenObtainPairView importable for anythin
+TokenObtainPairView = SignInView
 
 @extend_schema(
     tags=["Transactions"],
@@ -140,6 +160,7 @@ class TokenObtainView(TokenObtainPairView):
 )
 class ProcessTransactionView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = TransactionRequestSerializer
     
     def post(self, request: Request) -> Response:
         client_ip = _get_ip(request)
@@ -275,6 +296,8 @@ class ProcessTransactionView(APIView):
 )   
 class TransactionDetailView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = TransactionDecryptedSerializer
+
     def get(self, request: Request, ref: str) -> Response:
         try:
             tx = Transaction.objects.get(transaction_ref=ref)
@@ -334,6 +357,7 @@ class TransactionDetailView(APIView):
 )
 class ArchiveListView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = ArchiveListResponseSerializer
 
     def get(self, request: Request) -> Response:
         archives = TransactionArchive.objects.filter(
