@@ -21,6 +21,7 @@ from pci_api.validators import validate_transaction
 
 from pci_api.serializers import *
 
+from pci_api import transaction_log
 from pci_api.errors import error_response, _flatten_drf_errors
 from pci_api.middleware import _get_ip
 
@@ -237,7 +238,7 @@ class ProcessTransactionView(APIView):
                 client_ip = client_ip,
             )
         except Exception as exc:
-            logger.warning(
+            logger.error(
                 "transaction.db_error",
                 extra={"ip": client_ip, "pan_masked": pan_masked_val, "error": type(exc).__name__},
             )
@@ -260,6 +261,23 @@ class ProcessTransactionView(APIView):
                 "db_id": tx.pk,
             },
         )
+
+        try:
+            transaction_log.record_live(
+                ref=tx_ref,
+                pan_masked=pan_masked_val,
+                amount=amount,
+                email=email,
+                status="PENDING",
+                _get_ip=client_ip,
+                user=request.user.email,
+                db_id=tx.pk,
+            )
+        except Exception as exc:
+            logger.error(
+                "transaction_log.record_live_failed",
+                extra={"ref": tx_ref, "error": repr(exc)},
+            )
 
         return Response(
             {
@@ -366,7 +384,7 @@ class ArchiveListView(APIView):
             "transaction_ref", "pan_masked", "amount", "email",
             "status", "created_at", "archived_at", "archived_reason",
         )
-        return Response({"success": True, "count": archives.count(), "result": list(archives)})
+        return Response({"success": True, "count": archives.count(), "results": list(archives)})
 
 
 

@@ -198,12 +198,25 @@ LOG_FILE = os.environ.get("LOG_FILE", "logs/transactions.log")
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 os.makedirs(os.path.dirname(BASE_DIR / LOG_FILE), exist_ok=True)
 
+TRANSACTION_LIVE_LOG_FILE = os.environ.get(
+    "TRANSACTION_LIVE_LOG_FILE", "logs/transaction_live.log"
+)
+TRANSACTION_ARCHIVED_LOG_FILE = os.environ.get(
+    "TRANSACTION_ARCHIVED_LOG_FILE", "logs/transaction_archived.log"
+)
+
+os.makedirs((BASE_DIR / TRANSACTION_LIVE_LOG_FILE).parent, exist_ok=True)
+os.makedirs((BASE_DIR / TRANSACTION_ARCHIVED_LOG_FILE).parent, exist_ok=True)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'pci_json': {
            '()': 'pci_api.logging_formatter.PCIJsonFormatter',
+        },
+        'transaction_sjon': {
+            '()': 'pci_api.logging_formatter.TransactionLogFormatter',
         },
     },
     'handlers': {
@@ -218,17 +231,28 @@ LOGGING = {
         },
 
         # Console handler for development
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'pci_json',
+        "console": {"class": "logging.StreamHandler", "formatter": "pci_json"},
+        "transaction_live_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / TRANSACTION_LIVE_LOG_FILE,
+            "maxBytes": 10 * 1024 * 1024,  # 10 MB per file
+            "backupCount": 10,
+            "encoding": "utf-8",
+            "formatter": "transaction_sjon",
+        },
+        "transaction_archived_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / TRANSACTION_ARCHIVED_LOG_FILE,
+            "maxBytes": 10 * 1024 * 1024,  # 10 MB per file
+            "backupCount": 10,
+            "encoding": "utf-8",
+            "formatter": "transaction_sjon",
         },
     },
     'loggers': {
-        'pci_audit': {
-            'handlers': ['transaction_file', 'console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
+        'pci_audit': {'handlers': ['transaction_file', 'console'], 'level': LOG_LEVEL, 'propagate': False},
+        'pci_transaction_live': {'handlers': ['transaction_live_file'], 'level': LOG_LEVEL, 'propagate': False},
+        'pci_transaction_archived': {'handlers': ['transaction_archived_file'], 'level': LOG_LEVEL, 'propagate': False},
     },
 }
 

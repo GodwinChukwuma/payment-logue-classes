@@ -7,6 +7,7 @@ from datetime import datetime, timezone, timedelta
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
+from pci_api import transaction_log
 from pci_api.models import Transaction, TransactionArchive
 
 logger = logging.getLogger("pci_audit")
@@ -14,6 +15,7 @@ logger = logging.getLogger("pci_audit")
 BATCH_SIZE = 500
 
 class Command(BaseCommand):
+    """Archive transactions older than ARCHIVE_AFTER_SECONDS seconds."""
     help = "Archive transactions older than ARCHIVE_AFTER_SECONDS seconds."
 
     def add_arguments(self, parser):
@@ -83,14 +85,14 @@ class Command(BaseCommand):
             extra={
                 "archved": archived_total,
                 "errors": errors,
-                "cutoff_days": seconds,
+                "cutoff_seconds": seconds,
                 "cutoff_date": cutoff.isoformat(),
                 "batches": batch_num,
             },
         )
 
         msg = (
-            f"Arhived {archived_total} pf {total} transaction(s)"
+            f"Arhived {archived_total} of {total} transaction(s)"
             f"(cutoff: {seconds} / {cutoff.isoformat()})"
         )
         if errors:
@@ -127,6 +129,14 @@ def _archive_batch(batch: list[Transaction]) -> int:
         TransactionArchive.objects.bulk_create(archive_row, ignore_conflicts=False)
         ids = [tx.pk for tx in batch]
         Transaction.objects.filter(pk__in=ids).delete()
+    for tx in batch:
+        try:
+            transaction_log.move_to_archived(tx.transaction_ref, archived_reason="age_policy")
+        except Exception as exc:
+            logger.error(
+                "transaction_log.move_to_archived_failed",
+                extra={"ref": tx.transaction_ref, "error": repr(exc)},
+            )
 
     return len(batch)
 
