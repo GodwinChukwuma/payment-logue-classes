@@ -1,0 +1,77 @@
+from __future__ import annotations
+from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from wallet.models import Transaction, Wallet, User
+
+class RegisterSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(max_length=255)
+    email = serializers.EmailField()
+    password = serializers.CharField(min_length=8, write_only=True)
+    bvn = serializers.CharField(min_length=11, max_length=11, write_only=True)
+    pin = serializers.CharField(min_length=4, max_length=6, write_only=True)
+
+class RegistrationResponseSerializer(serializers.ModelSerializer):
+    success = serializers.BooleanField(default=True)
+    message = serializers.CharField()
+    email = serializers.EmailField()
+    account_no = serializers.CharField()
+
+class LoginSerializer(TokenObtainPairSerializer):
+    """"Use email as the username field"""
+
+class LoginResponseSerializer(serializers.ModelSerializer):
+    success = serializers.BooleanField(default=True)
+    message = serializers.CharField()
+    access = serializers.CharField()
+    refresh = serializers.CharField()
+
+
+class WalletSerializer(serializers.ModelSerializer):
+    owner_email = serializers.EmailField(source="user.email", ready_only=True)
+    account_no = serializers.CharField(source="user.account_no", read_only=True)
+
+    class Meta:
+        model = Wallet
+        fields = [
+            "owner_email",
+            "account_no",
+            "balance",
+            "debit_limit",
+            "credit_limit",
+            "created_at",
+            "last_updated_at",
+        ]
+
+class FundSerializer(serializers.Serializer):
+    amount = serializers.DecimalField(max_digits=15, decimal_places=2)
+    description = serializers.CharField(max_length=255, required=False, default="wallet funding")
+
+class WithdrawSerializer(serializers.Serializer):
+    amount = serializers.DecimalField(max_digits=15, decimal_places=2)
+    bank_code = serializers.CharField(max_length=11)
+    account_number = serializers.CharField(max_length=10)
+    description = serializers.CharField(max_length=255, required=False, default="External withdrawal")
+    pin = serializers.CharField(write_only=True)
+
+
+class TransferSerializer(serializers.Serializer):
+    recipient_account_no = serializers.CharField(max_length=10)
+    amount = serializers.DecimalField(max_digits=15, decimal_places=2)
+    description = serializers.CharField(max_length=255, required=False, default="Intra-wallet transfer")
+    pin = serializers.CharField(write_only=True)
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        models = Transaction
+        fields = [
+            "reference",
+            "type",
+            "amount",
+            "balance_before",
+            "balance_after",
+            "description",
+            "status",
+            "counterpart_ref",
+            "date",     
+        ]

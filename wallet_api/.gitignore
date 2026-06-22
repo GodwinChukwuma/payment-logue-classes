@@ -1,0 +1,90 @@
+# Virtual Environment
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Django
+db.sqlite3
+*.sqlite3
+
+# Django Static & Media
+staticfiles/
+media/
+
+# Environment Variables
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Coverage & Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.tox/
+nosetests.xml
+coverage.xml
+
+# IDEs
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Linux
+*~
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Docker
+docker-compose.override.yml
+
+# Local PostgreSQL dumps
+*.sql.gz
+*.dump
+
+# PyCharm
+.idea/
+
+# VS Code Workspace
+*.code-workspace
+
+# Secrets / Keys
+*.pem
+*.key
+*.crt
+
+# Python version managers
+.python-version
+
+# Celery
+celerybeat-schedule
+
+# Django collectstatic
+static/
+
+# Generated schema files
+schema.yml
+schema.json
+
