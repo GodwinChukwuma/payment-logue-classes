@@ -44,8 +44,6 @@ INSTALLED_APPS = [
 
     'wallet.apps.WalletConfig',
     'loans.apps.LoansConfig',
-
-    
 ]
 
 MIDDLEWARE = [
@@ -117,7 +115,7 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.JSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "EXCEPTION_HANDLER": "wallet.utils.custom_exception_handler",
+    #"EXCEPTION_HANDLER": "wallet.utils.custom_exception_handler",
 }
 
 # AUTH_PASSWORD_VALIDATORS = [
@@ -177,34 +175,34 @@ MAX_LOAN_AMOUNT = float(os.environ.get("MAX_LOAN_AMOUNT", "1000000.00"))
 MIN_LOAN_AMOUNT = float(os.environ.get("MIN_LOAN_AMOUNT", "5000.00"))
 
 
-# LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
-# os.makedirs(BASE_DIR / "logs", exist_ok=True)
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
+os.makedirs(BASE_DIR / "logs", exist_ok=True)
  
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "formatters": {
-#         "json": {"()": "wallet.logging_formatter.WalletJsonFormatter"},
-#     },
-#     "handlers": {
-#         "file": {
-#             "class":       "logging.handlers.RotatingFileHandler",
-#             "filename":    BASE_DIR / "logs/wallet.log",
-#             "maxBytes":    10 * 1024 * 1024,
-#             "backupCount": 10,
-#             "encoding":    "utf-8",
-#             "formatter":   "json",
-#         },
-#         "console": {"class": "logging.StreamHandler", "formatter": "json"},
-#     },
-#     "loggers": {
-#         "wallet_audit": {
-#             "handlers":  ["file", "console"],
-#             "level":     LOG_LEVEL,
-#             "propagate": False,
-#         },
-#     },
-# }
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "json": {"()": "wallet.logging_formatter.WalletJsonFormatter"},
+    },
+    "handlers": {
+        "file": {
+            "class":       "logging.handlers.RotatingFileHandler",
+            "filename":    BASE_DIR / "logs/wallet.log",
+            "maxBytes":    10 * 1024 * 1024,
+            "backupCount": 10,
+            "encoding":    "utf-8",
+            "formatter":   "json",
+        },
+        "console": {"class": "logging.StreamHandler", "formatter": "json"},
+    },
+    "loggers": {
+        "wallet_audit": {
+            "handlers":  ["file", "console"],
+            "level":     LOG_LEVEL,
+            "propagate": False,
+        },
+    },
+}
 
 # LANGUAGE_CODE = 'en-us'
 

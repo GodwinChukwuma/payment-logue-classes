@@ -58,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     account_no = models.CharField(max_length=20, unique=True, blank=True)
     is_kyc_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_satff = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     last_updated_at = models.DateTimeField(auto_now=True)
 
@@ -67,7 +67,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS =[]
 
     class Meta:
-        db_table = "wallet_user"
+        db_table = "wallet_users"
 
     def __str__(self) -> str:
         return self.email

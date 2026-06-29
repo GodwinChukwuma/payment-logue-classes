@@ -4,7 +4,6 @@ from __future__ import annotations
 Input validations for registration, PIN verification, and transactions amounts.
 Centralised here so views stays thin and validation is tetsable in isolation
 """
-import os
 from dataclasses import dataclass, field
 from decimal import Decimal, InvalidOperation
 import re
@@ -23,6 +22,15 @@ _BVN_RE = re.compile(r"^\d{11}$")
 _PIN_RE = re.compile(r"^\d{4,6}$")
 _ACCOUNT_RE = re.compile(r"^\d{10}$")
 
+_ALLOWED_EMAIL_DOMAIN = {
+    "gmail.com", "yahoo.com", "yahoo.co.uk",
+    "outlook.com", "hotmail.com", "hotmail.co.uk",
+    "icloud.com", "me.com", "mac.com",
+    "protonmail.com", "proton.me",
+    "aol.com",
+    "zoho.com",
+}
+
 def validate_registration(data: dict) -> ValidationResult:
     r = ValidationResult()
 
@@ -32,12 +40,19 @@ def validate_registration(data: dict) -> ValidationResult:
     email = data.get("email", "")
     if not re.match(r"^[^@]+@[^@]+\.[^@]+$", email):
         r.add("email", "A valid email address is required.")
+    else:
+        domain = email.split("@")[-1].lower()
+        if domain not in _ALLOWED_EMAIL_DOMAIN:
+            r.add(
+                "email",
+                f"Email domain '{domain}' is not supported."
+            )
     
     password = data.get("password", "")
     if len(password) < 8:
         r.add("password", "Password must be at least 8 characters long.")
     
-    bvn = str(data.get("bevn", "")).strip()
+    bvn = str(data.get("bvn", "")).strip()
     if not _BVN_RE.match(bvn):
         r.add("bvn", "BVN must be 11 digits long.")
 

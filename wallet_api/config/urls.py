@@ -9,11 +9,11 @@ from drf_spectacular.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path("api/schema", SpectacularAPIView.as_view(), name="schema"),
-    path("api/docs", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
 
-    path("api/auth/", include("wallet.auth.urls")),
+    path("api/auth/", include("wallet.auth_urls")),
     path("api/wallet/", include("wallet.urls")),
-    path("api/loan/", include("loan.urls")),
+    path("api/loans/", include("loans.urls")),
 ]

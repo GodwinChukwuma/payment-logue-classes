@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from wallet.errors import error_response
 from wallet.serializers import (
@@ -68,7 +68,7 @@ class RegisterView(APIView):
         bvn_encrypted = encrypt_field(bvn)
         pin_encrypted = encrypt_field(pin)
 
-        with db_transaction():
+        with db_transaction.atomic():
             user = User.objects.create_user(
                 email=email,
                 full_name=request.data["full_name"].strip(),
@@ -102,7 +102,7 @@ class RegisterView(APIView):
         )
 
         
-class LoginView(TokenObtainPairSerializer):
+class LoginView(TokenObtainPairView):
     serializeer_class = LoginSerializer
 
     def post(self, request: Request, *args, **kwargs) -> Response:
@@ -143,7 +143,7 @@ class FundView(APIView):
         wallet = request.user.wallet
         description = str(request.data.get("description", "Wallet funding")).strip()
 
-        if not wallet.can_fund(amount):
+        if not wallet.can_credit(amount):
             return error_response(
                 "CREDIT_LIMIT_EXCEEDED",
                 f"This credit would exceed your your wallet credit limit of {wallet.credit_limit}",
@@ -151,7 +151,7 @@ class FundView(APIView):
             )
         
         ref = _make_ref("fund")
-        with db_transaction():
+        with db_transaction.atomic():
             bal_before = wallet.balance
             wallet.balance += amount
             wallet.save()
@@ -202,7 +202,7 @@ class WithdrawView(APIView):
         user = request.user
         wallet = user.wallet
 
-        if not user.is_kyc_validated:
+        if not user.is_kyc_verified:
             return error_response(
                 "KYC_REQUIRED",
                 "KYC validdation is required before making withrawals.",
@@ -272,7 +272,7 @@ class TransferView(APIView):
             )
         
         sender = request.user
-        if not sender.is_kyc_validated:
+        if not sender.is_kyc_verified:
             return error_response(
                 "KYC_REQUIRED",
                 "KYC validdation is required before making transfers.",
@@ -324,13 +324,13 @@ class TransferView(APIView):
         ref_out = _make_ref("trf")
         ref_in = _make_ref("trf")
 
-        with db_transaction():
+        with db_transaction.atomic():
             # debit sender
             s_before = sender_wallet.balance
             sender_wallet.balance -= amount
             sender_wallet.save()
 
-            Transaction.objcets.create(
+            Transaction.objects.create(
                 wallet = sender_wallet,
                 reference = ref_out,
                 type = TransactionType.TRANSFER_OUT,
@@ -339,7 +339,7 @@ class TransferView(APIView):
                 balance_after = sender_wallet.balance,
                 description = f"{desc} -> {recipient.account_no}",
                 status = TransactionStatus.SUCCESS,
-                coubnterpart_ref = ref_in
+                counterpart_ref = ref_in
             )
 
             # Credit recipient
@@ -376,7 +376,7 @@ class TransferView(APIView):
             "message": "Transfer successful.",
             "reference_out": ref_out,
             "amount": str(amount),
-            "recipient_account": recipient.account,
+            "recipient_account": recipient_account,
             "new_balance": str(sender_wallet.balance),
         })
 
@@ -386,9 +386,10 @@ class TransactionHistoryView(APIView):
     serializer_class = TransactionSerializer
 
     def get(self, request: Request) -> Response:
-        txns = request.user.wallet.transaction.all()[:50]
+        txns = request.user.wallet.transactions.all()[:50]
         return Response({
             "success": True,
+            "count": txns.count(),
             "transactions": TransactionSerializer(txns, many=True).data
         })
 

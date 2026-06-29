@@ -41,4 +41,26 @@ class WalletJsonFormatter(logging.Formatter):
         if record.exc_info:
             payload["exception"] = self.formatException(record.exc_info)
 
-        return json.dumps(_scrub(payload, default=str))
+        return json.dumps(_scrub(payload), default=str)
+    
+class WalletTransactionLogFormatter(logging.Formatter):
+    
+    """
+    JSON formatter for two supplementary transaction log filees
+    """
+    _STALE_KEYS = frozenset({"event", "level", "timestamp"})
+
+    def format(self, record: logging.LogRecord) -> str:
+        payload: dict[str, Any] = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "level": record.levelname,
+            "event": record.getMessage(),
+        }
+
+        for k, v in record.__dict__.items():
+            if k in _SKIP or k in self._STALE_KEYS:
+                payload[k] = v
+        if record.exc_info:
+            payload["exception"] = self.formatException(record.exc_info)
+
+        return json.dumps(_scrub(payload), default=str)

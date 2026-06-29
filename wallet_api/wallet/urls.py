@@ -7,12 +7,12 @@ from wallet.views import (
     WithdrawView,
 )
 
-ulrpatterns = [
+urlpatterns = [
     path("", WalletDetailView.as_view(), name="wallet-detail"),
     path("fund/", FundView.as_view(), name="wallet-fund"),
     path("withdraw/", WithdrawView.as_view(), name="wallet-withdraw"),
     path("transfer/", TransferView.as_view(), name="wallet-transfer"),
-    path("history/", TransactionHistoryView.as_view(), name="wallet-transactions"),
+    path("transactions/", TransactionHistoryView.as_view(), name="wallet-transactions"),
 ]
 
 
