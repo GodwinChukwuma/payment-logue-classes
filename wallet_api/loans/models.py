@@ -24,6 +24,7 @@ class LoanApplication(models.Model):
     Split evenly accross duration_months instalments:
     """
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name="loans")
+    user_loan_number = models.PositiveIntegerField()
     amount_requested = models.DecimalField(max_digits=15, decimal_places=2)
     amount_approved = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
     interest_rate = models.DecimalField(max_digits=15, decimal_places=2)
@@ -38,6 +39,7 @@ class LoanApplication(models.Model):
     class Meta:
         db_table = "loan_applications"
         ordering = ["-created_at"]
+        unique_together = [["user", "user_loan_number"]]
 
     def __str__(self) -> str:
         return f"Loan#{self.pk} ({self.user.email} {self.amount_requested} [{self.status}])"
@@ -67,7 +69,9 @@ class LoanApplication(models.Model):
     
     @property
     def outstanding_balance(self) -> Decimal:
-        return (self.total_repayable - self.amount_repaid).quantize(Decimal("0.01"))
+        """Never goes below zero, overpayment is not tracked as negative"""
+        raw = self.total_repayable - self.amount_repaid
+        return max(raw, Decimal("0.00")).quantize(Decimal("0.01"))
 
 
 class RepaymentStatus(models.TextChoices):
@@ -93,7 +97,7 @@ class LoanRepayment(models.Model):
     class Meta:
         db_table = "loan_repayments"
         ordering = ["due_date"]
-        unique_together = ("loan", "instalment_no")
+        unique_together = [["loan", "instalment_no"]]
 
     def __str__(self) -> str:
         return f"Repayment#{self.instalment_no} Loan#{self.loan_id} due={self.due_date}"

@@ -7,7 +7,10 @@ from datetime import date, timedelta
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings as django_settings
-from django.db import transaction as db_transaction
+from django.db import (
+    transaction as db_transaction,
+    models as db_models,
+)
 from django.utils import timezone
 
 from rest_framework.views import APIView
@@ -38,7 +41,7 @@ class ApplyView(APIView):
         
         user = request.user
 
-        if not user.is_kyc_verified:
+        if not user.is_kyc_validated:
             return error_response(
                 "KYC_REQUIRED",
                 "KYC validation is required before applying for a loan.",
@@ -89,8 +92,12 @@ class ApplyView(APIView):
         ref = _make_ref("loan")
         
         with db_transaction.atomic():
+            last_num = LoanApplication.objects.filter(
+                user=user
+            ).aggregate(max_num=db_models.Max("user_loan_number"))["max_num"] or 0
             loan = LoanApplication.objects.create(
                 user = user,
+                user_loan_number = last_num + 1,
                 amount_requested = amount,
                 amount_approved = amount,
                 interest_rate = interest_rate,
@@ -187,15 +194,11 @@ class RepayView(APIView):
                 "INVALID_PIN", "Incorrect PIN.", status.HTTP_401_UNAUTHORIZED
             )
         
-        # find the next pending instalment
-        next_instalment = loan.repayments.filter(
-            status=RepaymentStatus.PENDING
-        ).order_by("instalment_no").first()
-
-        if not next_instalment:
+        outstanding = loan.outstanding_balance
+        if outstanding <= 0:
             return error_response(
-                "NO_PENDING_INSTALMENT",
-                "No pending instalment found.",
+                "LOAN_FULLY_REPAID",
+                "This loan has no outstanding balance.",
                 status.HTTP_400_BAD_REQUEST,
             )
         
@@ -210,16 +213,45 @@ class RepayView(APIView):
                     "Invalid repayment amount.",
                     status.HTTP_422_UNPROCESSABLE_ENTITY,
                 )
-        else:
-            amount = next_instalment.amount_due
 
+            if amount <= 0:
+                return error_response(
+                    "VALIDATION_ERROR",
+                    "Repayment amount must be greater than zero.",
+                    status.HTTP_422_UNPROCESSABLE_ENTITY,
+                )
+        
+        # Defaul: repay next pending instalment exact amount due
+        else:
+            next_inst = loan.repayments.filter(
+                status=RepaymentStatus.PENDING
+            ).order_by("instalment_no").first()
+            amount = next_inst.amount_due if next_inst else outstanding
+
+        # cap at the actual outstanding balance no overpayment
+        # Track whether the user tried to overpay
+        overpayment_attempted = amount > outstanding
+        if overpayment_attempted:
+            amount = outstanding
+
+        # fetch the pending instalment befor processing
+        # This prevent money taking but not credited bug. If all instalment are already paid, the loan status will be changed
+        # paid but outstanding_balance > 0, allow overpayment to clear the balance
+        pending = list(
+            loan.repayments.filter(
+                status=RepaymentStatus.PENDING
+            ).order_by("instalment_no")
+        )
+
+        # if not pending instalmemt and amountnis no zero, balance-clearance payment allow it
+        # The atomic block will close the loan after the wallet debit
         if amount <= 0:
             return error_response(
                 "VALIDATION_ERROR",
-                "Repayment amount must be greater than 0.",
+                "Computed repayment amount is zero - nothing to pay",
                 status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
-        
+
         wallet = user.wallet
         if not wallet.can_debit(amount):
             return error_response(
@@ -229,6 +261,8 @@ class RepayView(APIView):
             )
         
         ref = _make_ref("rep")
+        instalments_paid = []
+        remaining = amount
         
         with db_transaction.atomic():
             bal_before = wallet.balance
@@ -242,17 +276,44 @@ class RepayView(APIView):
                 amount = amount,
                 balance_before = bal_before,
                 balance_after = wallet.balance,
-                description = f"Loan repayment #{loan.pk} instalment #{next_instalment.instalment_no}",
+                description = f"Loan repayment (Loan #{loan.user_loan_number})",
                 status = TransactionStatus.SUCCESS,
             )
 
-            next_instalment.amount_paid = amount
-            next_instalment.paid_at = timezone.now()
-            next_instalment.status = RepaymentStatus.PAID
-            next_instalment.transaction_ref = ref
-            next_instalment.save()
-
-            # close the loan if fully repaid
+            # Sweep through pending instalments in order, crediting each until the payment is used upt
+            # cover partial payments of one instalment, exact payment, or payment that cover several.
+            if pending:
+                for inst in pending:
+                    if remaining <= 0:
+                        break
+                    pay = min(remaining, inst.amount_due)
+                    inst.amount_paid = pay
+                    inst.paid_at = timezone.now()
+                    inst.status = RepaymentStatus.PAID
+                    inst.transaction_ref = ref
+                    inst.save()
+                    instalments_paid.append(inst.instalment_no)
+                    remaining -= pay
+            else:
+                # in the case the payment period closes maybe by underpaying the the agreed amount
+                # the catchup here so the amount paid will reflect the actual amount
+                last_no =loan.repayments.aggregate(
+                    max_no=db_models.Max("instalment_no")
+                )["max_no"] or 0
+                catch_up = LoanRepayment.objects.create(
+                    loan = loan,
+                    instalment_no = last_no + 1,
+                    amount_due = outstanding,
+                    amount_paid = amount,
+                    due_date = timezone.now().date(),
+                    paid_at = timezone.now(),
+                    status = RepaymentStatus.PAID,
+                    transaction_ref = ref,
+                )
+                instalments_paid.append(catch_up.instalment_no)
+            
+            #Close the loan if fully paid
+            loan.refresh_from_db()
             if loan.outstanding_balance <= 0:
                 loan.status = LoanStatus.CLOSED
                 loan.save()
@@ -261,7 +322,7 @@ class RepayView(APIView):
             "loan.repayment",
             extra={
                 "loan_id": loan.pk,
-                "instalment": next_instalment.instalment_no,
+                "instalments_paid": instalments_paid,
                 "amount": str(amount),
                 "email": user.email,
                 "ref": ref,
@@ -269,14 +330,49 @@ class RepayView(APIView):
             }
         )
 
+        loan.refresh_from_db()
+        new_outstanding = loan.outstanding_balance
+
+        # Build a contetxtual message based onwhat actaully happend
+        if overpayment_attempted:
+            message = (
+                f"Your payment was reduced to {amount} (the exact outstanding balance)."
+                f"Do not overpay - send the exact outstanding amount next time."
+                f"Loan is now {'fully repaid and close' if loan.status == LoanStatus.CLOSED else f'ACTIVE with {new_outstanding} remaining.'}."
+            )
+
+        elif loan.status == LoanStatus.CLOSED:
+            message = "Loan fully repaid. Your loan is now closed."
+        elif not pending:
+            message = (
+                f"Balance clearance payment of {amount} applied. "
+                f"Outstanding balance remianing: {new_outstanding}."
+            )
+        else:
+            paid_count = len(instalments_paid)
+            instalments_word = "instalment" if paid_count == 1 else "instalments"
+            if new_outstanding > 0:
+                message = (
+                    f"Payment of {amount} applied to {instalments_word}. "
+                    f"{', '.join(str(i) for i in instalments_paid)}."
+                    f" Outstanding balance remianing: {new_outstanding}."
+                    f"Continue repaying to close the loan."
+                )
+            else:
+                message = (
+                    f"Payment of {amount} applied to {instalments_word}. "
+                    f"{', '.join(str(i) for i in instalments_paid)}."
+                    f"Loan fully repaid. Your loan is now closed."
+                )
         return Response({
             "success": True,
-            "message": "Repayment successful.",
+            "message": message,
             "reference": ref,
             "amount_paid": str(amount),
+            "instalments_paid": instalments_paid,
             "new_balance": str(wallet.balance),
             "loan_status": loan.status,
-            "outstanding": str(loan.outstanding_balance)
+            "outstanding": str(new_outstanding),
         })
 
 def _schedule_repayments(loan: LoanApplication):

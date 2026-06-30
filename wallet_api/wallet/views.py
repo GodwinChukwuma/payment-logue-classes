@@ -75,7 +75,7 @@ class RegisterView(APIView):
                 password=request.data["password"],
                 bvn_encrypted=bvn_encrypted,
                 pin_encrypted=pin_encrypted,
-                is_kyc_verified=kyc_passed
+                is_kyc_validated=kyc_passed
             )
             # Auto create wallet for the user kyc is validated
             Wallet.objects.create(user=user)
@@ -202,7 +202,7 @@ class WithdrawView(APIView):
         user = request.user
         wallet = user.wallet
 
-        if not user.is_kyc_verified:
+        if not user.is_kyc_validated:
             return error_response(
                 "KYC_REQUIRED",
                 "KYC validdation is required before making withrawals.",
@@ -272,7 +272,7 @@ class TransferView(APIView):
             )
         
         sender = request.user
-        if not sender.is_kyc_verified:
+        if not sender.is_kyc_validated:
             return error_response(
                 "KYC_REQUIRED",
                 "KYC validdation is required before making transfers.",

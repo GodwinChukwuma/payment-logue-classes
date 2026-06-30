@@ -56,7 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     bvn_encrypted = models.TextField()
     pin_encrypted = models.TextField()
     account_no = models.CharField(max_length=20, unique=True, blank=True)
-    is_kyc_verified = models.BooleanField(default=False)
+    is_kyc_validated = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

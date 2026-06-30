@@ -45,11 +45,11 @@ class WalletSerializer(serializers.ModelSerializer):
         ]
 
 class FundSerializer(serializers.Serializer):
-    amount = serializers.DecimalField(min_value="0.01", max_digits=15, decimal_places=2)
+    amount = serializers.DecimalField(min_value=0.01, max_digits=15, decimal_places=2)
     description = serializers.CharField(max_length=255, required=False, default="wallet funding")
 
 class WithdrawSerializer(serializers.Serializer):
-    amount = serializers.DecimalField(max_digits=15, decimal_places=2, min_value="0.01")
+    amount = serializers.DecimalField(max_digits=15, decimal_places=2, min_value=0.01)
     bank_code = serializers.CharField(max_length=11)
     account_number = serializers.CharField(max_length=10)
     description = serializers.CharField(max_length=255, required=False, default="External withdrawal")
@@ -58,7 +58,7 @@ class WithdrawSerializer(serializers.Serializer):
 
 class TransferSerializer(serializers.Serializer):
     recipient_account_no = serializers.CharField(max_length=10)
-    amount = serializers.DecimalField(min_value="0.01", max_digits=15, decimal_places=2)
+    amount = serializers.DecimalField(min_value=0.01, max_digits=15, decimal_places=2)
     description = serializers.CharField(max_length=255, required=False, default="Intra-wallet transfer")
     pin = serializers.CharField(write_only=True)
 

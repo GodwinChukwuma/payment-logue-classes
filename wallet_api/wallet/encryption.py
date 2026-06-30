@@ -34,3 +34,11 @@ def decrypt_field(ciphertext: str) -> str:
         return aesgcm.decrypt(iv, ct, None).decode()
     except Exception as exc:
         raise ValueError("Decryption failed - data may be tampered or key is wrong.") from exc
+    
+def masked_bvn(bvn: str) -> str:
+    bvn = str(bvn).strip()
+    if len(bvn) <= 4:
+        return "*" * len(bvn)
+    return "*" * (len(bvn) - 4) + bvn[-4:]
+
+

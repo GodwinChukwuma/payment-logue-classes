@@ -3,7 +3,7 @@ from rest_framework import serializers
 from loans.models import LoanApplication, LoanRepayment
 
 class LoanApplicationSerializer(serializers.Serializer):
-    amount_requested = serializers.DecimalField(max_digits=15, decimal_places=2, min_value="0.01")
+    amount_requested = serializers.DecimalField(max_digits=15, decimal_places=2, min_value=0.01)
     duration_months = serializers.IntegerField(min_value=1, max_value=60)
     purpose = serializers.CharField(max_length=255)
     pin = serializers.CharField(write_only=True)
@@ -23,10 +23,10 @@ class LoanRepaymentSerializer(serializers.ModelSerializer):
 
 class LoanDetailSerializer(serializers.ModelSerializer):
     repayments = LoanRepaymentSerializer(many=True, read_only=True)
-    total_repayable = serializers.DecimalField(max_digits=15, decimal_places=2, min_value="0.01", read_only=True)
-    monthly_instalment = serializers.DecimalField(max_digits=15, decimal_places=2, min_value="0.01", read_only=True)
-    amount_repaid = serializers.DecimalField(max_digits=15, decimal_places=2, min_value="0.01", read_only=True)
-    outstanding_balance = serializers.DecimalField(max_digits=15, decimal_places=2, min_value="0.01", read_only=True)
+    total_repayable = serializers.DecimalField(max_digits=15, decimal_places=2, min_value=0.01, read_only=True)
+    monthly_instalment = serializers.DecimalField(max_digits=15, decimal_places=2, min_value=0.01, read_only=True)
+    amount_repaid = serializers.DecimalField(max_digits=15, decimal_places=2, min_value=0.01, read_only=True)
+    outstanding_balance = serializers.DecimalField(max_digits=15, decimal_places=2, min_value=0.01, read_only=True)
 
     class Meta:
         model = LoanApplication
@@ -50,7 +50,7 @@ class LoanDetailSerializer(serializers.ModelSerializer):
         ]
 
 class LoanListSerializer(serializers.ModelSerializer):
-    outstanding_balance = serializers.DecimalField(max_digits=15, decimal_places=2,min_value="0.01", read_only=True)
+    outstanding_balance = serializers.DecimalField(max_digits=15, decimal_places=2,min_value=0.01, read_only=True)
 
     class Meta:
         model = LoanApplication
@@ -67,7 +67,7 @@ class LoanListSerializer(serializers.ModelSerializer):
         ]
 
 class RepaySerializer(serializers.Serializer):
-    amount = serializers.DecimalField(max_digits=15, decimal_places=2, min_value="0.01", required=False)
+    amount = serializers.DecimalField(max_digits=15, decimal_places=2, min_value=0.01, required=False)
     pin = serializers.CharField(write_only=True)
 
 
