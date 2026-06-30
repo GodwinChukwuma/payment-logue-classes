@@ -21,6 +21,8 @@ from wallet.serializers import (
     WalletSerializer,
     LoginSerializer,
     FundSerializer,
+    AccountLookupSerializer,
+    KYCValidateSerializer,
 )
 from wallet.validators import (
     validate_registration,
@@ -35,7 +37,7 @@ from wallet.models import (
     TransactionType,
     TransactionStatus,
 )
-from wallet.encryption import encrypt_field, decrypt_field
+from wallet.encryption import encrypt_field, decrypt_field, masked_bvn
 
 
 logger = logging.getLogger("wallet_audit")
@@ -62,8 +64,6 @@ class RegisterView(APIView):
         bvn = str(request.data["bvn"]).strip()
         pin = str(request.data["pin"]).strip()
 
-        kyc_passed = len(bvn) == 11 and bvn.isdigit()
-
         # encrypt sensitive fields
         bvn_encrypted = encrypt_field(bvn)
         pin_encrypted = encrypt_field(pin)
@@ -75,7 +75,7 @@ class RegisterView(APIView):
                 password=request.data["password"],
                 bvn_encrypted=bvn_encrypted,
                 pin_encrypted=pin_encrypted,
-                is_kyc_validated=kyc_passed
+                is_kyc_validated=False
             )
             # Auto create wallet for the user kyc is validated
             Wallet.objects.create(user=user)
@@ -85,7 +85,6 @@ class RegisterView(APIView):
             extra={
                 "email": email,
                 "account_no": user.account_no,
-                "kyc": kyc_passed,
                 "ip": _ip(request)
             },
         )
@@ -93,10 +92,13 @@ class RegisterView(APIView):
         return Response(
             {
                 "success": True,
-                "message": "Account created successfully. Your wallet is ready.",
+                "message": (
+                    "Account created successfully. Your wallet is ready."
+                    "KYC is pending and will be validated before you can make transactions."
+                ),
                 "email": email,
                 "account_no": user.account_no,
-                "kyc_status": "VALIDATED" if kyc_passed else "PENDING"
+                "kyc_status": "PENDING"
             },
             status=status.HTTP_201_CREATED
         )
@@ -393,13 +395,112 @@ class TransactionHistoryView(APIView):
             "transactions": TransactionSerializer(txns, many=True).data
         })
 
+class KYCValidateView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = KYCValidateSerializer
 
+    def post(self, request: Request) -> Response:
+        user = request.user
+
+        if user.is_kyc_validated:
+            return error_response(
+                "KYC_ALREADY_VALIDATED",
+                "KYC has already been validated.",
+                status.HTTP_409_CONFLICT,
+            )
+        
+        submitted_bvn = str(request.data.get("bvn", "")).strip()
+        if len(submitted_bvn) != 11 or not submitted_bvn.isdigit():
+            return error_response(
+                "VALIDATION_ERROR",
+                "BVN must be 11 digits long.",
+                status.HTTP_422_UNPROCESSABLE_ENTITY,
+            )
+        try:
+            store_bvn = decrypt_field(user.bvn_encrypted)
+        except ValueError:
+            return error_response(
+                "DECRYPTION_ERROR",
+                "Could not verify stored BVN.",
+                status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        
+        if submitted_bvn != store_bvn:
+            return error_response(
+                "BVN_MISMATCH",
+                "The submitted BVN does not match the BVN on file for this account.",
+                status.HTTP_400_BAD_REQUEST,
+            )
+        
+        user.is_kyc_validated = True
+        user.save()
+
+        logger.info(
+            "kyc.validate",
+            extra={"email": user.email, "ip": _ip(request)}
+        )
+
+        return Response({
+            "success": True,
+            "message": "KYC validated successfully.",
+            "kyc_validated": "VALIDATED",
+            "masked_bvn": masked_bvn(store_bvn)
+        })
 
 def _ip(request: Request) -> str:
     return (
         request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip()
         or request.META.get("REMOTE_ADDR", "")
     )
+
+class AccountLookupView(APIView):
+    serializer_class = AccountLookupSerializer
+
+    def get(self, request: Request) -> Response:
+        ser = AccountLookupSerializer(data=request.data)
+        if not ser.is_valid():
+            return error_response(
+                "VALIDATION_ERROR", "Provide at least email or account_no.",
+                status.HTTP_422_UNPROCESSABLE_ENTITY, details=ser.errors
+            )
+        
+        email = ser.validated_data.get("email", "").strip().lower()
+        account_no = ser.validated_data.get("account_no", "").strip()
+
+        query = User.objects.all()
+        if email:
+            query = query.filter(email=email)
+        if account_no:
+            query = query.filter(account_no=account_no)
+            
+        user = query.first()
+        if not user:
+            return error_response(
+                "NOT_FOUND",
+                "No account found matching the supplied details.",
+                status.HTTP_404_NOT_FOUND,
+            )
+        
+        try:
+            store_bvn = decrypt_field(user.bvn_encrypted)
+            masked = masked_bvn(store_bvn)
+        except ValueError:
+            masked = "***********"
+
+        logger.info(
+            "account.lookup",
+            extra={"email": user.email, "ip": _ip(request)}
+        )
+
+        return Response({
+            "success": True,
+            "email": user.email,
+            "full_name": user.full_name,
+            "account_no": user.account_no,
+            "masked_bvn": masked,
+            "kyc_status": "VALIDATED" if user.is_kyc_validated else "PENDING",
+        })
+    
 
 def _make_ref(prefix: str) -> str:
     return f"{prefix}_{secrets.token_hex(12)}"

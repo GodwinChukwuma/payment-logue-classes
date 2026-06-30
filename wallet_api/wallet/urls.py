@@ -5,6 +5,8 @@ from wallet.views import (
     TransferView,
     WalletDetailView,
     WithdrawView,
+    KYCValidateView,
+    AccountLookupView,
 )
 
 urlpatterns = [
@@ -13,6 +15,8 @@ urlpatterns = [
     path("withdraw/", WithdrawView.as_view(), name="wallet-withdraw"),
     path("transfer/", TransferView.as_view(), name="wallet-transfer"),
     path("transactions/", TransactionHistoryView.as_view(), name="wallet-transactions"),
+    path("kyc/validate/", KYCValidateView.as_view(), name="wallet-kyc-validate"),
+    path("account/lookup/", AccountLookupView.as_view(), name="wallet-account-lookup"),
 ]
 
 

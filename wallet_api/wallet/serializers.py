@@ -76,3 +76,38 @@ class TransactionSerializer(serializers.ModelSerializer):
             "counterpart_ref",
             "date",     
         ]
+
+class KYCValidateSerializer(serializers.Serializer):
+    bvn = serializers.CharField(max_length=11, min_length=11)
+
+class KYCStatusResponseSerializer(serializers.Serializer):
+    success = serializers.BooleanField(default=True)
+    message = serializers.CharField()
+    kyc_status = serializers.CharField()
+    masked_bvn = serializers.CharField()
+
+class AccountLookupSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=False)
+    account_no = serializers.CharField(required=False, max_length=10)
+    
+    def validate(self, attrs):
+        if not attrs.get("email") and not attrs.get("account_no"):
+            raise serializers.ValidationError(
+                "Provide at least one of the email of account_no"
+            )
+        return attrs
+
+
+class AccountLookupResponseSerializer(serializers.Serializer):
+    success = serializers.BooleanField(default=True)
+    full_name = serializers.CharField()
+    email = serializers.EmailField()
+    account_no = serializers.CharField()
+    masked_bvn = serializers.CharField()
+    kyc_status = serializers.CharField()
+
+
+
+
+
+
