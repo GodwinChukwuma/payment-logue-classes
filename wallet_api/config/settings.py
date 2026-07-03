@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+     "django_apscheduler",
 
     'rest_framework',
     'rest_framework_simplejwt',
@@ -160,6 +161,18 @@ SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_DIST":         "SIDECAR",
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST":              "SIDECAR",
+
+    # map each model's status choices to a clearly named enum
+    "ENUM_NAME_OVERRIDES": {
+        "TransactionStatusEnum": "wallet.models.TransactionStatus",
+        "TransactionTypeEnum": "wallet.models.TransactionType",
+        "LoanStatusEnum": "loans.models.LoanStatus",
+        "RepaymentStatusEnum": "loans.models.RepaymentStatus",
+    },
+
+    "OPERATION_ID_MAP": {
+        ("GET", "/api/loans/{id}"): "loans_detail_retrieve",
+    },
 }
 
 _hex = os.environ.get("AES_ENCRYPTION_KEY", "")
@@ -177,28 +190,77 @@ MIN_LOAN_AMOUNT = float(os.environ.get("MIN_LOAN_AMOUNT", "5000.00"))
 
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 os.makedirs(BASE_DIR / "logs", exist_ok=True)
- 
+
+LOG_ARCHIVE_AFTER_SECONDS = int(os.environ.get("LOG_ARCHIVE_AFTER_SECONDS", "30"))
+LOG_ARCHIVE_INTERVAL_SECONDS = int(os.environ.get("LOG_ARCHIVE_INTERVAL_SECONDS", "30"))
+
+TRANSACTION_LIVE_LOG_FILE = os.environ.get(
+    "TRANSACTION_LIVE_LOG_FILE", "logs/transactions_live.log"
+)
+
+TRANSACTION_ARCHIVED_LOG_FILE = os.environ.get(
+    "TRANSACTION_ARCHIVED_LOG_FILE", "logs/transactions_archived.log"
+)
+
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+
     "formatters": {
-        "json": {"()": "wallet.logging_formatter.WalletJsonFormatter"},
+        "json": {
+            "()": "wallet.logging_formatter.WalletJsonFormatter",
+        },
+        "txn_json": {
+            "()": "wallet.logging_formatter.WalletTransactionLogFormatter",
+        },
     },
+
     "handlers": {
         "file": {
-            "class":       "logging.handlers.RotatingFileHandler",
-            "filename":    BASE_DIR / "logs/wallet.log",
-            "maxBytes":    10 * 1024 * 1024,
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / "logs/wallet.log",
+            "maxBytes": 10 * 1024 * 1024,
             "backupCount": 10,
-            "encoding":    "utf-8",
-            "formatter":   "json",
+            "encoding": "utf-8",
+            "formatter": "json",
         },
-        "console": {"class": "logging.StreamHandler", "formatter": "json"},
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "json",
+        },
+        "txn_live_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / TRANSACTION_LIVE_LOG_FILE,
+            "maxBytes": 10 * 1024 * 1024,
+            "backupCount": 10,
+            "encoding": "utf-8",
+            "formatter": "json",
+        },
+        "txn_archived_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / TRANSACTION_ARCHIVED_LOG_FILE,
+            "maxBytes": 10 * 1024 * 1024,
+            "backupCount": 10,
+            "encoding": "utf-8",
+            "formatter": "txn_json",
+        },
     },
+
     "loggers": {
         "wallet_audit": {
-            "handlers":  ["file", "console"],
-            "level":     LOG_LEVEL,
+            "handlers": ["file", "console"],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+        "wallet_txn_live": {
+            "handlers": ["txn_live_file"],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+        "wallet_txn_archived": {
+            "handlers": ["txn_archived_file"],
+            "level": LOG_LEVEL,
             "propagate": False,
         },
     },

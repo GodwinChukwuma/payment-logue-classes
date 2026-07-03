@@ -294,6 +294,25 @@ class RepayView(APIView):
                     inst.save()
                     instalments_paid.append(inst.instalment_no)
                     remaining -= pay
+
+                if remaining > 0:
+                    # if there is still remaining amount after paying all pending instalments, 
+                    # but there is still unused balance, do not discard it, bank it as a catch-up 
+                    # to repay the next instalment
+                    last_no = loan.repayments.aggregate(
+                        max_no=db_models.Max("instalment_no")
+                    )["max_no"] or 0
+                    catch_up = LoanRepayment.objects.create(
+                        loan = loan,
+                        instalment_no = last_no + 1,
+                        amount_due = remaining,
+                        amount_paid = remaining,
+                        due_date = timezone.now().date(),
+                        paid_at = timezone.now(),
+                        status = RepaymentStatus.PAID,
+                        transaction_ref = ref,
+                    )
+                    instalments_paid.append(catch_up.instalment_no)
             else:
                 # in the case the payment period closes maybe by underpaying the the agreed amount
                 # the catchup here so the amount paid will reflect the actual amount

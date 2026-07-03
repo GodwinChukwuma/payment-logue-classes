@@ -13,6 +13,7 @@ from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from wallet.errors import error_response
+from wallet import transaction_log
 from wallet.serializers import (
     RegisterSerializer,
     TransactionSerializer,
@@ -178,6 +179,26 @@ class FundView(APIView):
                 "ip": _ip(request)
             },
         )
+        try:
+            transaction_log.record(
+                ref=ref,
+                txn_type=TransactionType.FUND,
+                amount=str(amount),
+                email=request.user.email,
+                wallet_id=wallet.pk,
+                balance_before=str(bal_before),
+                balance_after=str(wallet.balance),
+                description=description,
+                ip=_ip(request),
+            )
+        except Exception as exc:
+            logger.error(
+                "txn_log.record_failed",
+                extra={
+                    "ref": ref,
+                    "error": repr(exc),
+                },
+            )
 
         return Response({
             "success": True,
@@ -237,7 +258,10 @@ class WithdrawView(APIView):
                 amount = amount,
                 balance_before = bal_before,
                 balance_after = wallet.balance,
-                description = request.data.get("description", "External withdrawal"),
+                description = request.data.get(
+                    f"{request.data.get('description', 'External withdrawal')}",
+                    f"{request.data.get('bank_code', '')} / {request.data.get('account_number', '')}",
+                ).strip(),
                 status = TransactionStatus.SUCCESS
             )
 
@@ -249,8 +273,29 @@ class WithdrawView(APIView):
                 "bank_code": request.data.get("bank_code"),
                 "email": user.email,
                 "ip": _ip(request)
-            }
+            },
         )
+
+        try:
+            transaction_log.record(
+                ref=ref,
+                txn_type=TransactionType.WITHDRAW,
+                amount=str(amount),
+                email=user.email,
+                wallet_id=wallet.pk,
+                balance_before=str(bal_before),
+                balance_after=str(wallet.balance),
+                description=request.data.get("description", "External withdrawal"),
+                ip=_ip(request),
+            )
+        except Exception as exc:
+            logger.error(
+                "txn_log.record_failed",
+                extra={
+                    "ref": ref,
+                    "error": repr(exc),
+                },
+            )
 
         return Response({
             "success": True,
@@ -373,6 +418,39 @@ class TransferView(APIView):
             }
         )
 
+        try:
+            transaction_log.record(
+                ref=ref_out,
+                txn_type=TransactionType.TRANSFER_OUT,
+                amount=str(amount),
+                email=sender.email,
+                wallet_id=sender_wallet.pk,
+                balance_before=str(s_before),
+                balance_after=str(sender_wallet.balance),
+                description=f"Transfer for {recipient.account_no}",
+                ip=_ip(request),
+            )
+
+            transaction_log.record(
+                ref=ref_in,
+                txn_type=TransactionType.TRANSFER_IN,
+                amount=str(amount),
+                email=recipient.email,
+                wallet_id=recipient_wallet.pk,
+                balance_before=str(r_before),
+                balance_after=str(recipient_wallet.balance),
+                description=f"Transfer from {sender.account_no}",
+                ip=_ip(request),
+            )
+        except Exception as exc:
+            logger.error(
+                "txn_log.record_failed",
+                extra={
+                    "ref_out": ref_out,
+                    "error": repr(exc)
+                }
+            )
+
         return Response({
             "success": True,
             "message": "Transfer successful.",
@@ -447,12 +525,6 @@ class KYCValidateView(APIView):
             "masked_bvn": masked_bvn(store_bvn)
         })
 
-def _ip(request: Request) -> str:
-    return (
-        request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip()
-        or request.META.get("REMOTE_ADDR", "")
-    )
-
 class AccountLookupView(APIView):
     serializer_class = AccountLookupSerializer
 
@@ -501,6 +573,11 @@ class AccountLookupView(APIView):
             "kyc_status": "VALIDATED" if user.is_kyc_validated else "PENDING",
         })
     
+def _ip(request: Request) -> str:
+    return (
+        request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip()
+        or request.META.get("REMOTE_ADDR", "")
+    )
 
 def _make_ref(prefix: str) -> str:
     return f"{prefix}_{secrets.token_hex(12)}"

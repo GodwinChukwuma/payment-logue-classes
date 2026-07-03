@@ -1,9 +1,11 @@
+apscheduler==3.10.4
 asgiref==3.11.1
 attrs==26.1.0
 bcrypt==5.0.0
 cffi==2.0.0
 cryptography==49.0.0
 Django==6.0.6
+django-apscheduler==0.7.0
 djangorestframework==3.17.1
 djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.29.0
