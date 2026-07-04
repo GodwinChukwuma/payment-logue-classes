@@ -142,6 +142,13 @@ class FundView(APIView):
         ok, amount, err = validate_amount(request.data.get("amount"))
         if not ok:
             return error_response("VALIDATION_ERROR", err, status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+        if not request.user.is_kyc_validated:
+            return error_response(
+                "KYC_REQUIRED",
+                "KYC validation is required before funding your wallet.",
+                status.HTTP_403_FORBIDDEN
+            )
         
         wallet = request.user.wallet
         description = str(request.data.get("description", "Wallet funding")).strip()
