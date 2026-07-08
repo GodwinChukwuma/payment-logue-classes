@@ -107,7 +107,18 @@ class AccountLookupResponseSerializer(serializers.Serializer):
     kyc_status = serializers.CharField()
 
 
+class EmailTokenSerializer(serializers.Serializer):
+    token = serializers.CharField(min_length=6, max_length=6)
 
+class PhoneSendSerializer(serializers.Serializer):
+    phone_number = serializers.CharField()
 
+class PhoneOTPSerializer(serializers.Serializer):
+    code = serializers.CharField(min_length=6, max_length=6)
+
+class FaceIDSerializer(serializers.Serializer):
+    face_verified = serializers.BooleanField()
+
+    
 
 

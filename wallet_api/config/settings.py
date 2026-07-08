@@ -184,9 +184,14 @@ if len(_hex) != 64:
 AES_ENCRYPTION_KEY = bytes.fromhex(_hex)
  
 DEFAULT_INTEREST_RATE = float(os.environ.get("DEFAULT_INTEREST_RATE", "5.0"))
-MAX_LOAN_AMOUNT = float(os.environ.get("MAX_LOAN_AMOUNT", "1000000.00"))
-MIN_LOAN_AMOUNT = float(os.environ.get("MIN_LOAN_AMOUNT", "5000.00"))
+# MAX_LOAN_AMOUNT = float(os.environ.get("MAX_LOAN_AMOUNT", "1000000.00"))
+# MIN_LOAN_AMOUNT = float(os.environ.get("MIN_LOAN_AMOUNT", "5000.00"))
 
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "sandbox.smtp.mailtrap.io")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "2525"))
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+EMAIL_FROM = os.environ.get("EMAIL_FROM", "noreply@walletapi.dev")
 
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").upper()
 os.makedirs(BASE_DIR / "logs", exist_ok=True)

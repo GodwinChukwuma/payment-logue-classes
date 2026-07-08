@@ -69,22 +69,42 @@ class ApplyView(APIView):
                 "Invalid amount requested.",
                 status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
-        
-        min_loan = Decimal(str(django_settings.MIN_LOAN_AMOUNT))
-        max_loan = Decimal(str(django_settings.MAX_LOAN_AMOUNT))
 
-        if not (min_loan <= amount <= max_loan):
+        tier_limits = user.tier_loan_limits
+        max_loan = tier_limits["max"]
+        max_months = tier_limits["max_months"]
+
+        if amount <= 0:
             return error_response(
-                "AMOUNT_OUT_OF_RANGE",
-                f"Loan amount must be between {min_loan} and {max_loan}",
-                status.HTTP_400_BAD_REQUEST,
+                "VALIDATION_ERROR",
+                "Invalid amount requested.",
+                status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
         
+        if amount > max_loan:
+            return error_response(
+                "AMOUNT_EXCEEDS_TIER_LIMIT",
+                f"Your current KYC tier ({user.tier_label}) allows loans up to",
+                f"{max_loan} NGN. Upgrade your KYC tier to access higher loan amounts.",
+                status.HTTP_400_BAD_REQUEST
+            )
+        
+        # min_loan = Decimal(str(django_settings.MIN_LOAN_AMOUNT))
+        # max_loan = Decimal(str(django_settings.MAX_LOAN_AMOUNT))
+
+        # if not (min_loan <= amount <= max_loan):
+        #     return error_response(
+        #         "AMOUNT_OUT_OF_RANGE",
+        #         f"Loan amount must be between {min_loan} and {max_loan}",
+        #         status.HTTP_400_BAD_REQUEST,
+        #     )
+        
         duration = int(request.data.get("duration_months", 0))
-        if not (1 <= duration <= 60):
+        if not (1 <= duration <= max_months):
             return error_response(
                 "INVALID_DURATION",
-                "Loan duration must be between 1 and 60 months.",
+                f"Your KYC tier ({user.tier_label}) allows repayment period of"
+                f"1 to {max_months} month(s). Upgrade your KYC tier for longer terms.",
                 status.HTTP_422_UNPROCESSABLE_ENTITY,
             )
         

@@ -12,6 +12,23 @@ from django.contrib.auth.models import (
 
 from decimal import Decimal
 
+class KYCTier(models.IntegerChoices):
+    TIER_1 = 1, "Tier 1 - Registered"
+    TIER_2 = 2, "Tier 2 - Email and phone verified"
+    TIER_3 = 3, "Tier 3 - BVN and faceId verified"
+
+TIER_LOANLIMITS = {
+    KYCTier.TIER_1: {"max": Decimal("2000.00"), "max_months": 1},
+    KYCTier.TIER_2: {"max": Decimal("10000.00"), "max_months": 3},
+    KYCTier.TIER_3: {"max":Decimal("1000000.00"), "max_months": 60},
+}
+
+TIER_CREDIT_LIMITS = {
+    KYCTier.TIER_1: Decimal("5000.00"),
+    KYCTier.TIER_2: Decimal("500000.00"),
+    KYCTier.TIER_3: Decimal("10000000.00"),
+}
+
 class UserManager(BaseUserManager):
     def create_user(
         self,
@@ -56,7 +73,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     bvn_encrypted = models.TextField()
     pin_encrypted = models.TextField()
     account_no = models.CharField(max_length=20, unique=True, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
+    kyc_tier = models.IntegerField(choices=KYCTier.choices, default=KYCTier.TIER_1)
     is_kyc_validated = models.BooleanField(default=False)
+    is_email_verified = models.BooleanField(default=False)
+    is_phone_verified = models.BooleanField(default=False)
+    face_id_verified = models.BooleanField(default=False)
+    email_verification_token = models.CharField(max_length=64, blank=True)
+    phone_verification_token = models.CharField(max_length=6, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -77,6 +101,33 @@ class User(AbstractBaseUser, PermissionsMixin):
             self.account_no = self._generate_account_no()
         super().save(*args, **kwargs)
 
+    def recalculate_tier(self) -> bool:
+        """
+        Recalculate the user's KYC tier based on the verification flags
+        Return True if tier change
+        """
+        if self.is_kyc_validated and self.face_id_verified:
+            new_tier = KYCTier.TIER_3
+        elif self.is_email_verified and self.is_phone_verified:
+            new_tier = KYCTier.TIER_2
+        else:
+            new_tier = KYCTier.TIER_1
+
+        if new_tier != self.kyc_tier:
+            self.kyc_tier = new_tier
+            return True
+        return False
+    
+    @property
+    def tier_loan_limits(self) -> dict:
+        """Return the loan limits for the user's KYC tier"""
+        return TIER_LOANLIMITS[self.kyc_tier]
+    
+    @property
+    def tier_label(self) -> str:
+        """Return the label for the user's KYC tier"""
+        return KYCTier(self.kyc_tier).label
+
     @staticmethod
     def _generate_account_no():
         """Generate a unique account number 10-digits long for each user"""
@@ -91,7 +142,7 @@ class Wallet(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="wallet")
     balance = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"))
     debit_limit = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("0.00"))
-    credit_limit = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("1000000.00"))
+    credit_limit = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal("500000.00"))
     created_at = models.DateTimeField(auto_now_add=True)
     last_updated_at = models.DateTimeField(auto_now=True)
 
@@ -108,6 +159,15 @@ class Wallet(models.Model):
     def can_credit(self, amount: Decimal) -> bool:
         """Return true if this credit would leave balance <= credit_limit"""
         return (self.balance + amount) <= self.credit_limit
+    
+    def apply_tier_limit(self) -> None:
+        """
+        Set credit limit to match the user current KYC tier.
+        """
+        new_limit = TIER_CREDIT_LIMITS[self.user.kyc_tier]
+        if self.credit_limit != new_limit:
+            self.credit_limit = new_limit
+            self.save()
 
 class TransactionStatus(models.TextChoices):
     PENDING = "PENDING", "Pending"
