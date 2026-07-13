@@ -32,7 +32,7 @@ logger = logging.getLogger("wallet_audit")
     summary="Send email verification token",
     responses={200: OpenApiResponse(description="Token sent")},
 )
-class SendemailVerificationView(APIView):
+class SendEmailVerificationView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request: Request) -> Response:

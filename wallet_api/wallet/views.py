@@ -78,7 +78,6 @@ class RegisterView(APIView):
                 pin_encrypted=pin_encrypted,
                 is_kyc_validated=False
             )
-            # Auto create wallet for the user kyc is validated
             Wallet.objects.create(user=user)
 
         logger.info(
