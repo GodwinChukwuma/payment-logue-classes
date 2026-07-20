@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'wallet.apps.WalletConfig',
     'loans.apps.LoansConfig',
+    "payments.apps.PaymentsConfig",
 ]
 
 MIDDLEWARE = [
@@ -182,6 +183,11 @@ if len(_hex) != 64:
         "Generate with: python -c \"import secrets; print(secrets.token_hex(32))\""
     )
 AES_ENCRYPTION_KEY = bytes.fromhex(_hex)
+
+PAYSTACK_SECRET_KEY = os.environ.get("PAYSTACK_SECRET_KEY", "")
+PAYSTACK_PUBLIC_KEY = os.environ.get("PAYSTACK_PUBLIC_KEY", "")
+PAYSTACK_CALLBACK_URL = os.environ.get("PAYSTACK_CALLBACK_URL", "http://localhost:8000/api/payments/callback/")
+PAYSTACK_WEBHOOK_SECRET = os.environ.get("PAYSTACK_WEBHOOK_SECRET", "http://localhost:8000/api/payments/webhook/")
  
 DEFAULT_INTEREST_RATE = float(os.environ.get("DEFAULT_INTEREST_RATE", "5.0"))
 # MAX_LOAN_AMOUNT = float(os.environ.get("MAX_LOAN_AMOUNT", "1000000.00"))
