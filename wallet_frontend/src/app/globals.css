@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 240 33% 97%;
+  --foreground: 230 25% 18%;
+  --card: 0 0% 100%;
+  --card-foreground: 230 25% 18%;
+  --primary: 231 89% 61%;
+  --primary-foreground: 0 0% 100%;
+  --primary-light: 231 89% 96%;
+  --secondary: 240 10% 95%;
+  --secondary-foreground: 230 25% 30%;
+  --muted: 240 10% 95%;
+  --muted-foreground: 230 10% 55%;
+  --accent: 231 89% 96%;
+  --accent-foreground: 231 89% 61%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 230 20% 92%;
+  --input: 230 20% 92%;
+  --ring: 231 89% 61%;
+  --radius: 1rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: hsl(240, 33%, 97%);
+  color: hsl(230, 25%, 18%);
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .hero-gradient {
+    background: linear-gradient(135deg, #4361EE 0%, #3A56D4 100%);
+  }
+  .sidebar-gradient {
+    background: linear-gradient(160deg, #4361EE 0%, #3451C7 100%);
+  }
+  .card-shadow {
+    box-shadow: 0 2px 16px rgba(67, 97, 238, 0.08);
+  }
+  .icon-blue { background-color: hsl(221, 100%, 94%); }
+  .icon-pink { background-color: hsl(340, 100%, 94%); }
+  .icon-teal { background-color: hsl(168, 60%, 90%); }
+  .icon-yellow { background-color: hsl(45, 100%, 92%); }
+  .icon-purple { background-color: hsl(270, 60%, 94%); }
+}
+
