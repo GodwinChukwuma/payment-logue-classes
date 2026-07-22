@@ -1,110 +1,180 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "sonner";
-import { Loader2, Wallet, Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
 import { useAuthStore } from "@/store/auth";
 import api from "@/lib/api";
 import { getErrorMessage } from "@/lib/utils";
 
-const schema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(1, "Password is required"),
+const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1) });
+const registerSchema = z.object({
+  full_name: z.string().min(2), email: z.string().email(),
+  password: z.string().min(8), bvn: z.string().length(11), pin: z.string().min(4).max(6),
 });
-type FormData = z.infer<typeof schema>;
+type LoginData = z.infer<typeof loginSchema>;
+type RegisterData = z.infer<typeof registerSchema>;
 
-export default function LoginPage() {
+function useToast() {
+  const [toast, setToast] = useState<{msg:string;ok:boolean}|null>(null);
+  const show = (msg:string, ok=true) => {
+    setToast({msg,ok});
+    setTimeout(()=>setToast(null), 3200);
+  };
+  return { toast, show };
+}
+
+export default function AuthPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const login = useAuthStore((s) => s.login);
+  const [tab, setTab] = useState<"login"|"register">(
+    searchParams.get("tab") === "register" ? "register" : "login"
+  );
   const [loading, setLoading] = useState(false);
-  const [showPw, setShowPw] = useState(false);
+  const [devToken, setDevToken] = useState<string|null>(null);
+  const { toast, show } = useToast();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema),
-  });
+  const lf = useForm<LoginData>({ resolver: zodResolver(loginSchema) });
+  const rf = useForm<RegisterData>({ resolver: zodResolver(registerSchema) });
 
-  const onSubmit = async (data: FormData) => {
+  const onLogin = async (data: LoginData) => {
     setLoading(true);
     try {
       const res = await api.post("/auth/login/", data);
       login(res.data.access, res.data.refresh, data.email);
-      toast.success("Welcome back!");
+      show("Welcome back!");
       router.push("/dashboard");
-    } catch (err) {
-      toast.error(getErrorMessage(err));
-    } finally {
-      setLoading(false);
-    }
+    } catch(err) { show(getErrorMessage(err), false); }
+    finally { setLoading(false); }
+  };
+
+  const onRegister = async (data: RegisterData) => {
+    setLoading(true);
+    try {
+      const res = await api.post("/auth/register/", data);
+      setDevToken(res.data.dev_otp ?? res.data.dev_email_verification_token);
+      show("Account created! Check your email.");
+      setTimeout(() => { setTab("login"); setDevToken(null); }, 4000);
+    } catch(err) { show(getErrorMessage(err), false); }
+    finally { setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{background:"linear-gradient(160deg,#4361EE 0%,#3A56D4 55%,#f5f5ff 55%)"}}>
-      {/* Top brand */}
-      <div className="flex items-center gap-3 p-6">
-        <div className="h-10 w-10 rounded-2xl bg-white/20 flex items-center justify-center">
-          <Wallet className="h-6 w-6 text-white" />
-        </div>
-        <span className="text-xl font-bold text-white">VelaWallet</span>
+    <div style={{position:"relative",minHeight:"100vh"}}>
+      {/* Aurora background */}
+      <div className="aurora" aria-hidden="true">
+        <span className="orb orb-1"/><span className="orb orb-2"/>
+        <span className="orb orb-3"/><span className="orb orb-4"/>
+        <div className="grid-overlay"/>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-4">
-        <div className="w-full max-w-sm">
-          {/* White card */}
-          <div className="bg-white rounded-3xl p-7 card-shadow">
-            <h1 className="text-2xl font-bold text-foreground">Sign in</h1>
-            <p className="text-muted-foreground text-sm mt-1 mb-6">Welcome back to VelaWallet</p>
+      {/* Top bar */}
+      <header className="topbar">
+        <div className="brand">
+          <span className="brand-mark">◆</span>
+          <span className="brand-text">VelaWallet</span>
+        </div>
+      </header>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-foreground block mb-1.5">Email</label>
-                <input
-                  type="email"
-                  placeholder="you@example.com"
-                  className="w-full h-12 px-4 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-                  {...register("email")}
-                />
-                {errors.email && <p className="text-xs text-destructive mt-1">{errors.email.message}</p>}
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-foreground block mb-1.5">Password</label>
-                <div className="relative">
-                  <input
-                    type={showPw ? "text" : "password"}
-                    placeholder="••••••••"
-                    className="w-full h-12 px-4 pr-12 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-                    {...register("password")}
-                  />
-                  <button type="button" onClick={() => setShowPw(!showPw)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                    {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-                {errors.password && <p className="text-xs text-destructive mt-1">{errors.password.message}</p>}
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full h-12 rounded-xl bg-primary text-white font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary/90 transition-all disabled:opacity-60 mt-2"
-              >
-                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                Sign in
-              </button>
-            </form>
-
-            <p className="text-center text-sm text-muted-foreground mt-5">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-primary font-semibold hover:underline">Register</Link>
+      <main className="container">
+        <section className="auth-wrap">
+          {/* Hero */}
+          <div className="auth-hero reveal">
+            <div className="hero-pill">⚡ Secure · KYC-compliant · AES-256</div>
+            <h1 className="hero-title">
+              Banking that feels<br/>
+              <span className="grad-text">effortless &amp; epic.</span>
+            </h1>
+            <p className="hero-sub">
+              Move money in seconds. Fund your wallet, send to anyone, and withdraw to
+              your bank — all wrapped in bank-grade encryption.
             </p>
+            <ul className="hero-feats">
+              <li><span className="feat-ico">🔐</span> AES-256 encrypted, KYC-verified accounts</li>
+              <li><span className="feat-ico">⚡</span> Instant intra-wallet transfers</li>
+              <li><span className="feat-ico">🛡️</span> PIN-protected debits &amp; smart limits</li>
+            </ul>
           </div>
+
+          {/* Auth card */}
+          <div className="card auth-card reveal reveal-2">
+            {/* Tabs */}
+            <div className="tabs">
+              <button className={`tab${tab==="login"?" active":""}`} onClick={()=>setTab("login")}>Login</button>
+              <button className={`tab${tab==="register"?" active":""}`} onClick={()=>setTab("register")}>Register</button>
+              <span className="tab-glow" style={{left: tab==="login" ? "6px" : "50%"}}/>
+            </div>
+
+            {/* Dev token */}
+            {devToken && (
+              <div style={{marginBottom:16,padding:"12px 16px",borderRadius:12,background:"rgba(245,158,11,0.1)",border:"1px solid rgba(245,158,11,0.25)"}}>
+                <p style={{color:"#fbbf24",fontSize:"0.75rem",fontWeight:700,margin:"0 0 4px"}}>Dev Email OTP</p>
+                <p style={{color:"#fde68a",fontSize:"1.6rem",fontWeight:800,letterSpacing:"0.3em",margin:0}}>{devToken}</p>
+              </div>
+            )}
+
+            {/* Login form */}
+            {tab === "login" && (
+              <form className="fw-form" onSubmit={lf.handleSubmit(onLogin)}>
+                <h2>Welcome back 👋</h2>
+                <label className="fw-label">Email
+                  <input type="email" className="fw-input" placeholder="you@example.com" {...lf.register("email")}/>
+                  {lf.formState.errors.email && <span style={{color:"#ff8794",fontSize:"0.75rem"}}>{lf.formState.errors.email.message}</span>}
+                </label>
+                <label className="fw-label">Password
+                  <input type="password" className="fw-input" placeholder="••••••••" {...lf.register("password")}/>
+                </label>
+                <button type="submit" className="btn btn-primary btn-glow" disabled={loading}>
+                  {loading ? "Logging in…" : "Login →"}
+                </button>
+              </form>
+            )}
+
+            {/* Register form */}
+            {tab === "register" && (
+              <form className="fw-form" onSubmit={rf.handleSubmit(onRegister)}>
+                <h2>Create your wallet ✨</h2>
+                <label className="fw-label">Full name
+                  <input className="fw-input" placeholder="Ada Lovelace" {...rf.register("full_name")}/>
+                </label>
+                <label className="fw-label">Email
+                  <input type="email" className="fw-input" placeholder="you@example.com" {...rf.register("email")}/>
+                </label>
+                <label className="fw-label">Password
+                  <input type="password" className="fw-input" placeholder="Min 8 chars" {...rf.register("password")}/>
+                </label>
+                <div className="row-2">
+                  <label className="fw-label">BVN (11 digits)
+                    <input className="fw-input" placeholder="22200011122" {...rf.register("bvn")}/>
+                  </label>
+                  <label className="fw-label">PIN (4–6 digits)
+                    <input type="password" className="fw-input" placeholder="1234" {...rf.register("pin")}/>
+                  </label>
+                </div>
+                <button type="submit" className="btn btn-primary btn-glow" disabled={loading}>
+                  {loading ? "Creating…" : "Create account →"}
+                </button>
+              </form>
+            )}
+          </div>
+        </section>
+      </main>
+
+      {/* Toast */}
+      {toast && (
+        <div className={`fw-toast ${toast.ok?"ok":"err"}`}>
+          {toast.ok ? "✅" : "⚠️"} {toast.msg}
         </div>
-      </div>
+      )}
+
+      <style>{`.container{max-width:1140px;margin:0 auto;padding:34px 22px 80px}`}</style>
     </div>
   );
 }
+
+
+
+
 

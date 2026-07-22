@@ -1,186 +1,248 @@
 "use client";
-import { useEffect, useState } from "react";
-import {
-  ArrowDownLeft, ArrowUpRight, ArrowLeftRight,
-  CreditCard, History, ShieldCheck,
-} from "lucide-react";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { useEffect, useState, useCallback } from "react";
 import { formatNaira, formatDate } from "@/lib/utils";
 import api from "@/lib/api";
 import type { Wallet, Transaction, KYCStatus } from "@/types";
 
-const quickActions = [
-  { href: "/dashboard/fund",     label: "Fund",     icon: ArrowDownLeft, bg: "icon-blue",   color: "text-blue-600" },
-  { href: "/dashboard/withdraw", label: "Withdraw", icon: ArrowUpRight,  bg: "icon-pink",   color: "text-pink-500" },
-  { href: "/dashboard/transfer", label: "Transfer", icon: ArrowLeftRight,bg: "icon-teal",   color: "text-teal-600" },
-  { href: "/dashboard/loans",    label: "Loans",    icon: CreditCard,    bg: "icon-yellow", color: "text-amber-500" },
-  { href: "/dashboard/history",  label: "History",  icon: History,       bg: "icon-purple", color: "text-purple-600" },
-  { href: "/dashboard/kyc",      label: "KYC",      icon: ShieldCheck,   bg: "icon-pink",   color: "text-rose-500" },
-];
+function useToast() {
+  const [toast, setToast] = useState<{msg:string;ok:boolean}|null>(null);
+  const show = (msg:string, ok=true) => { setToast({msg,ok}); setTimeout(()=>setToast(null),3200); };
+  return { toast, show };
+}
 
-const STATUS_VARIANT: Record<string, "success"|"warning"|"destructive"|"pending"> = {
-  SUCCESS: "success", PENDING: "pending", FAILED: "destructive", REVERSED: "warning",
+const ICONS: Record<string,string> = {
+  FUND:"💰", WITHDRAWAL:"🏦", TRANSFER_IN:"⬇️", TRANSFER_OUT:"⬆️",
+  LOAN_CREDIT:"💰", LOAN_DEBIT:"⬆️",
 };
 
-const isCredit = (type: string) =>
-  ["FUND", "TRANSFER_IN", "LOAN_CREDIT"].includes(type);
-
 export default function DashboardPage() {
-  const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [wallet, setWallet] = useState<Wallet|null>(null);
   const [txns, setTxns] = useState<Transaction[]>([]);
-  const [kyc, setKyc] = useState<KYCStatus | null>(null);
+  const [kyc, setKyc] = useState<KYCStatus|null>(null);
   const [loading, setLoading] = useState(true);
+  const { toast, show } = useToast();
 
-  useEffect(() => {
-    Promise.all([
-      api.get("/wallet/"),
-      api.get("/wallet/history/"),
-      api.get("/wallet/kyc/status/"),
-    ]).then(([w, h, k]) => {
-      setWallet(w.data);
-      setTxns(h.data.transactions?.slice(0, 5) ?? []);
-      setKyc(k.data);
-    }).finally(() => setLoading(false));
+  // KYC
+  const [bvn, setBvn] = useState(""); const [bvnLoading, setBvnLoading] = useState(false);
+  // Fund
+  const [fundAmt, setFundAmt] = useState(""); const [fundDesc, setFundDesc] = useState("Top up");
+  const [fundLoading, setFundLoading] = useState(false);
+  const [checkoutUrl, setCheckoutUrl] = useState<string|null>(null);
+  const [fundRef, setFundRef] = useState<string|null>(null);
+  // Transfer
+  const [tAcct, setTAcct] = useState(""); const [tAmt, setTAmt] = useState("");
+  const [tPin, setTPin] = useState(""); const [tDesc, setTDesc] = useState("");
+  const [tLoading, setTLoading] = useState(false);
+
+  const loadTxns = useCallback(async () => {
+    try {
+      const r = await api.get("/wallet/history/");
+      setTxns(r.data.transactions ?? []);
+    } catch {}
   }, []);
 
-  if (loading) {
-    return (
-      <div className="space-y-4 animate-pulse p-4">
-        <div className="h-40 rounded-2xl bg-blue-200/60" />
-        <div className="grid grid-cols-3 gap-3">
-          {[...Array(6)].map((_, i) => <div key={i} className="h-20 rounded-2xl bg-white/80" />)}
-        </div>
-        <div className="h-64 rounded-2xl bg-white/80" />
+  const loadAll = useCallback(async () => {
+    try {
+      const [w,,k] = await Promise.all([api.get("/wallet/"), api.get("/wallet/history/"), api.get("/wallet/kyc/status/")]);
+      setWallet(w.data);
+      setKyc(k.data);
+      await loadTxns();
+    } finally { setLoading(false); }
+  }, [loadTxns]);
+
+  useEffect(() => { loadAll(); }, [loadAll]);
+
+  const handleBvn = async () => {
+    if (bvn.length!==11) { show("BVN must be 11 digits",false); return; }
+    setBvnLoading(true);
+    try { await api.post("/wallet/kyc/validate/",{bvn}); show("KYC verified! Wallet operations unlocked."); setBvn(""); loadAll(); }
+    catch(e:unknown) { show((e as {response?:{data?:{error?:{message?:string}}}})?.response?.data?.error?.message??"Failed",false); }
+    finally { setBvnLoading(false); }
+  };
+
+  const handleFund = async () => {
+    if (Number(fundAmt)<100) { show("Minimum ₦100",false); return; }
+    setFundLoading(true);
+    try {
+      const r = await api.post("/payments/fund/initialize/",{amount:fundAmt});
+      setCheckoutUrl(r.data.checkout_url); setFundRef(r.data.reference);
+      show("Initialized. Opening Paystack…");
+      window.open(r.data.checkout_url,"_blank");
+    } catch(e:unknown) { show((e as {response?:{data?:{error?:{message?:string}}}})?.response?.data?.error?.message??"Failed",false); }
+    finally { setFundLoading(false); }
+  };
+
+  const handleVerify = async () => {
+    if (!fundRef) return;
+    setFundLoading(true);
+    try {
+      const r = await api.get(`/payments/callback?reference=${fundRef}`);
+      if (r.data.success) { show("Wallet funded"); setCheckoutUrl(null); setFundRef(null); setFundAmt(""); loadAll(); }
+    } catch { show("Not confirmed yet",false); }
+    finally { setFundLoading(false); }
+  };
+
+  const handleTransfer = async () => {
+    if (!tAcct||!tAmt||!tPin) { show("Fill all fields",false); return; }
+    setTLoading(true);
+    try {
+      await api.post("/wallet/transfer/",{recipient_account_no:tAcct,amount:tAmt,pin:tPin,description:tDesc});
+      show("Transfer successful"); setTAcct(""); setTAmt(""); setTPin(""); setTDesc(""); loadAll();
+    } catch(e:unknown) { show((e as {response?:{data?:{error?:{message?:string}}}})?.response?.data?.error?.message??"Failed",false); }
+    finally { setTLoading(false); }
+  };
+
+  const kycDone = kyc?.verifications?.bvn_validated;
+  const isCredit = (t:string) => ["FUND","TRANSFER_IN","LOAN_CREDIT"].includes(t);
+
+  const Input = ({placeholder,value,onChange,type="text"}:{placeholder:string;value:string;onChange:(v:string)=>void;type?:string}) => (
+    <input type={type} className="fw-input" placeholder={placeholder} value={value} onChange={e=>onChange(e.target.value)}/>
+  );
+
+  if (loading) return (
+    <div style={{padding:"34px 22px",maxWidth:1140,margin:"0 auto"}}>
+      <div style={{height:200,borderRadius:20,background:"rgba(255,255,255,0.04)",marginBottom:20,animation:"pulse 2s infinite"}}/>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(310px,1fr))",gap:20}}>
+        {[...Array(3)].map((_,i)=><div key={i} style={{height:220,borderRadius:20,background:"rgba(255,255,255,0.04)"}}/>)}
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <div className="space-y-5 pb-8">
+    <div style={{maxWidth:1140,margin:"0 auto",padding:"34px 22px 80px"}}>
+      <div className="dash-grid">
 
-      {/* Hero balance card — blue gradient like reference */}
-      <div className="hero-gradient rounded-2xl p-6 text-white relative overflow-hidden mx-1">
-        {/* Decorative circles */}
-        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10" />
-        <div className="absolute -right-2 top-12 h-20 w-20 rounded-full bg-white/10" />
-
-        <p className="text-white/70 text-sm font-medium">Available Balance</p>
-        <p className="text-4xl font-bold mt-1 tabular-nums relative z-10">
-          {wallet ? formatNaira(wallet.balance) : "₦0.00"}
-        </p>
-        <div className="flex items-center gap-3 mt-4 text-white/60 text-xs">
-          <span>Acct: {wallet?.account_no ?? "—"}</span>
-          <span>·</span>
-          <span>Limit: {wallet ? formatNaira(wallet.credit_limit) : "—"}</span>
+        {/* ── Wallet card ── */}
+        <div className="card wallet-card reveal">
+          <div className="card-shine" aria-hidden="true"/>
+          <div className="wallet-top">
+            <div className="chip" aria-hidden="true"/>
+            <span className={`pill ${kycDone?"pill-ok":"pill-warn"}`}>
+              {kycDone ? "● KYC verified" : "● KYC pending"}
+            </span>
+          </div>
+          <span className="wallet-label">Available balance</span>
+          <div className="balance">{wallet ? formatNaira(wallet.balance) : "₦0.00"}</div>
+          <div className="wallet-meta">
+            <div><span className="muted">Account No</span><strong>{wallet?.account_no ?? "—"}</strong></div>
+            <div><span className="muted">Daily debit limit</span><strong>{wallet ? formatNaira(wallet.debit_limit) : "—"}</strong></div>
+            <div><span className="muted">Daily credit limit</span><strong>{wallet ? formatNaira(wallet.credit_limit) : "—"}</strong></div>
+          </div>
+          <div className="wallet-brand">VelaWallet</div>
         </div>
 
-        {/* KYC tier pill */}
-        {kyc && (
-          <div className="mt-3 inline-flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1">
-            <div className="h-2 w-2 rounded-full bg-white" />
-            <span className="text-xs text-white font-medium">{kyc.tier_label}</span>
+        {/* ── KYC card ── */}
+        {!kycDone && (
+          <div className="card glass reveal reveal-2">
+            <h3><span className="ico">🪪</span> Complete KYC</h3>
+            <p className="muted" style={{marginBottom:16}}>Verify your BVN to unlock funding, transfers and withdrawals.</p>
+            <div className="fw-form">
+              <label className="fw-label">BVN
+                <Input placeholder="Enter your 11-digit BVN" value={bvn} onChange={setBvn}/>
+              </label>
+              <button className="btn btn-primary btn-glow" onClick={handleBvn} disabled={bvnLoading||bvn.length!==11}>
+                {bvnLoading?"Verifying…":"Verify KYC"}
+              </button>
+            </div>
           </div>
         )}
-      </div>
 
-      {/* Quick actions — pastel icon grid like reference */}
-      <div className="bg-white rounded-2xl p-4 card-shadow mx-1">
-        <div className="grid grid-cols-3 gap-4">
-          {quickActions.map(({ href, label, icon: Icon, bg, color }) => (
-            <Link key={href} href={href}>
-              <div className="flex flex-col items-center gap-2 py-2">
-                <div className={`h-12 w-12 rounded-2xl flex items-center justify-center ${bg}`}>
-                  <Icon className={`h-5 w-5 ${color}`} />
-                </div>
-                <span className="text-xs font-medium text-muted-foreground text-center leading-tight">
-                  {label}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* KYC next step hint */}
-      {kyc && kyc.kyc_tier < 3 && (
-        <div className="mx-1 bg-white rounded-2xl p-4 card-shadow border-l-4 border-primary">
-          <p className="text-xs text-muted-foreground">Next tier</p>
-          <p className="text-sm font-medium text-foreground mt-0.5">{kyc.next_tier_requires}</p>
-          <Link href="/dashboard/kyc" className="text-xs text-primary font-semibold mt-2 inline-block">
-            Upgrade now →
-          </Link>
-        </div>
-      )}
-
-      {/* Recent transactions — list card style from reference */}
-      <div className="bg-white rounded-2xl card-shadow mx-1 overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <p className="font-bold text-foreground">Recent Transactions</p>
-          <Link href="/dashboard/history"
-            className="text-xs text-primary font-semibold">
-            See all
-          </Link>
+        {/* ── Fund card ── */}
+        <div className="card glass reveal reveal-2">
+          <h3><span className="ico">💰</span> Fund wallet</h3>
+          {checkoutUrl ? (
+            <div className="fw-form">
+              <p className="muted">Complete payment on Paystack then confirm below.</p>
+              <button className="btn btn-ghost" onClick={()=>window.open(checkoutUrl,"_blank")}>Open Paystack ↗</button>
+              <button className="btn btn-success btn-glow" onClick={handleVerify} disabled={fundLoading}>
+                {fundLoading?"Verifying…":"I've Paid — Confirm"}
+              </button>
+              <button className="btn btn-ghost btn-sm" onClick={()=>{setCheckoutUrl(null);setFundRef(null);}}>Cancel</button>
+            </div>
+          ) : (
+            <div className="fw-form">
+              <label className="fw-label">Amount<Input placeholder="5000" value={fundAmt} onChange={setFundAmt} type="number"/></label>
+              <label className="fw-label">Description<Input placeholder="Top up" value={fundDesc} onChange={setFundDesc}/></label>
+              <button className="btn btn-success btn-glow" onClick={handleFund} disabled={fundLoading}>
+                {fundLoading?"Initializing…":"Fund"}
+              </button>
+            </div>
+          )}
         </div>
 
-        {txns.length === 0 ? (
-          <div className="py-12 text-center text-muted-foreground text-sm">
-            No transactions yet.
+        {/* ── Transfer card ── */}
+        <div className="card glass reveal reveal-3">
+          <h3><span className="ico">🔁</span> Transfer</h3>
+          <div className="fw-form">
+            <label className="fw-label">Recipient account no<Input placeholder="10 digits" value={tAcct} onChange={setTAcct}/></label>
+            <label className="fw-label">Amount<Input placeholder="1000" value={tAmt} onChange={setTAmt} type="number"/></label>
+            <label className="fw-label">PIN<Input placeholder="••••" value={tPin} onChange={setTPin} type="password"/></label>
+            <label className="fw-label">Description<Input placeholder="For lunch" value={tDesc} onChange={setTDesc}/></label>
+            <button className="btn btn-primary btn-glow" onClick={handleTransfer} disabled={tLoading}>
+              {tLoading?"Sending…":"Send"}
+            </button>
           </div>
-        ) : (
-          <div>
-            {txns.map((t) => (
-              <div key={t.reference}
-                className="flex items-center justify-between px-5 py-4 border-b border-border/60 last:border-0">
-                <div className="flex items-center gap-3">
-                  <div className={`h-10 w-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                    isCredit(t.type) ? "icon-teal" : "icon-pink"
-                  }`}>
-                    {isCredit(t.type)
-                      ? <ArrowDownLeft className="h-5 w-5 text-teal-600" />
-                      : <ArrowUpRight className="h-5 w-5 text-pink-500" />
-                    }
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground capitalize">
-                      {t.type.replace(/_/g, " ").toLowerCase()}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{formatDate(t.date)}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className={`font-bold text-sm ${isCredit(t.type) ? "text-teal-600" : "text-rose-500"}`}>
-                    {isCredit(t.type) ? "+" : "−"}{formatNaira(t.amount)}
-                  </p>
-                  <Badge variant={STATUS_VARIANT[t.status] ?? "secondary"} className="text-xs mt-0.5">
-                    {t.status}
-                  </Badge>
-                </div>
-              </div>
+        </div>
+
+        {/* ── More actions ── */}
+        <div className="card glass reveal reveal-3">
+          <h3><span className="ico">🧭</span> More</h3>
+          <div style={{display:"flex",flexDirection:"column",gap:10,marginTop:8}}>
+            {[
+              {href:"/dashboard/withdraw",label:"🏦 Withdraw to bank"},
+              {href:"/dashboard/loans",label:"💼 Loans"},
+              {href:"/dashboard/kyc",label:"🛡️ KYC & Verification"},
+              {href:"/dashboard/history",label:"🧾 Full history"},
+            ].map(({href,label})=>(
+              <a key={href} href={href}
+                style={{padding:"12px 16px",borderRadius:12,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.09)",color:"#eaf0ff",textDecoration:"none",fontSize:"0.92rem",fontWeight:600,transition:"all 0.18s ease",display:"block"}}
+                onMouseOver={e=>{(e.currentTarget as HTMLAnchorElement).style.background="rgba(109,107,255,0.12)";(e.currentTarget as HTMLAnchorElement).style.borderColor="rgba(109,107,255,0.3)";}}
+                onMouseOut={e=>{(e.currentTarget as HTMLAnchorElement).style.background="rgba(255,255,255,0.04)";(e.currentTarget as HTMLAnchorElement).style.borderColor="rgba(255,255,255,0.09)";}}>
+                {label}
+              </a>
             ))}
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Wallet limits card */}
-      {wallet && (
-        <div className="mx-1 bg-white rounded-2xl p-5 card-shadow">
-          <p className="font-bold text-foreground mb-3">Wallet Limits</p>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-background rounded-xl p-3">
-              <p className="text-xs text-muted-foreground">Debit Floor</p>
-              <p className="font-bold text-foreground mt-1">{formatNaira(wallet.debit_limit)}</p>
-            </div>
-            <div className="bg-background rounded-xl p-3">
-              <p className="text-xs text-muted-foreground">Credit Ceiling</p>
-              <p className="font-bold text-primary mt-1">{formatNaira(wallet.credit_limit)}</p>
-            </div>
+        {/* ── Transactions ── */}
+        <div className="card glass transactions-card reveal reveal-4">
+          <div className="tx-head">
+            <h3><span className="ico">🧾</span> Transactions</h3>
+            <button className="btn btn-ghost btn-sm" onClick={loadTxns}>⟳ Refresh</button>
+          </div>
+          <div className="tx-list">
+            {txns.length === 0
+              ? <p className="muted">No transactions yet.</p>
+              : txns.map((t,i) => {
+                  const credit = isCredit(t.type);
+                  return (
+                    <div className="tx-item" key={t.reference} style={{animationDelay:`${i*0.04}s`}}>
+                      <div className="tx-left">
+                        <span className={`tx-icon ${credit?"credit":"debit"}`}>{ICONS[t.type]||(credit?"⬇️":"⬆️")}</span>
+                        <span>
+                          <div className="tx-type">{t.type.replace(/_/g," ")}</div>
+                          <div className="tx-desc">{t.description||"—"} · {formatDate(t.date)}</div>
+                        </span>
+                      </div>
+                      <span className={`tx-amt ${credit?"credit":"debit"}`}>
+                        {credit?"+":"-"}{formatNaira(t.amount)}
+                      </span>
+                    </div>
+                  );
+                })
+            }
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Toast */}
+      {toast && <div className={`fw-toast ${toast.ok?"ok":"err"}`}>{toast.ok?"✅":"⚠️"} {toast.msg}</div>}
     </div>
   );
 }
+
+
+
 
 
 
